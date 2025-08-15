@@ -22,7 +22,7 @@
     },
     "dependencies": {
         "@msgpack/msgpack": "^3.1.2",
-        "@wxn0brp/db-core": ">=0.0.1 <0.1.0"
+        "@wxn0brp/db-core": ">=0.0.1 <0.2.0"
     },
     "exports": {
         ".": {
