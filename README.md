@@ -1,13 +1,11 @@
 # ValtheraDB Bin Plugin
 
-This is a proof-of-concept for an addon/plugin for the `@wxn0brp/db` (ValtheraDB) library.
-
 The purpose of this experiment is to create a storage layer that allows ValtheraDB, which normally operates on a directory/file structure, to instead use a single binary file for data storage.
 
 ## Installation
 
 ```bash
-yarn add github:wxn0brP/ValtheraDB-storage-bin#dist
+yarn add @wxn0brp/db-storage-bin
 ```
 
 ## Usage
@@ -54,6 +52,11 @@ Returns an object containing:
 -   `path`: The path to the binary file.
 -   `options`:
     -   `preferredSize`: The preferred block size for the database (default: `256`).
+
+## Documentation
+
+[Data Structure](https://github.com/wxn0brp/ValtheraDB-storage-bin/blob/master/docs/data-structure.md)
+[ValtheraDB](https://github.com/wxn0brp/ValtheraDB)
 
 ## License
 
