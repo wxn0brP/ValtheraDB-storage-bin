@@ -55,8 +55,8 @@ Returns an object containing:
 
 ## Documentation
 
-[Data Structure](https://github.com/wxn0brp/ValtheraDB-storage-bin/blob/master/docs/data-structure.md)
-[ValtheraDB](https://github.com/wxn0brp/ValtheraDB)
+- [Data Structure](https://github.com/wxn0brP/ValtheraDB-storage-bin/blob/master/docs/data-structure.md)
+- [ValtheraDB-Core](https://github.com/wxn0brP/ValtheraDB-core)
 
 ## License
 
