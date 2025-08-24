@@ -1,4 +1,5 @@
 import { BinManager, CollectionMeta } from ".";
+import { getFileCrc } from "../crc32";
 import { _log } from "../log";
 import { FileMeta, saveHeaderAndPayload } from "./head";
 import { detectCollisions, pushToFreeList, readData, roundUpCapacity, writeData } from "./utils";
@@ -78,6 +79,13 @@ export async function writeLogic(cmp: BinManager, collection: string, data: obje
         });
         await saveHeaderAndPayload(cmp);
         await _log(2, "Capacity exceeded");
+    } else {
+        if (cmp.options.crc) {
+            const { computedCrc } = await getFileCrc(fd);
+            const crcBuf = Buffer.alloc(16);
+            crcBuf.writeUInt32LE(computedCrc);
+            await writeData(fd, 16, crcBuf, 16);
+        }
     }
 }
 
