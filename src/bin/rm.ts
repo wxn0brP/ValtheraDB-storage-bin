@@ -1,7 +1,7 @@
-import { saveHeaderAndPayload } from "./head";
-import { findCollection } from "./data";
-import { writeData } from "./utils";
 import { BinManager } from ".";
+import { findCollection } from "./data";
+import { saveHeaderAndPayload } from "./head";
+import { writeData } from "./utils";
 
 export async function removeCollection(cmp: BinManager, collection: string) {
     const { meta, fd, options } = cmp;

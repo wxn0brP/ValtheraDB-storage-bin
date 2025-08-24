@@ -1,5 +1,5 @@
 {
-    "cmd": "NODE_ENV=development yarn bun",
+    "cmd": "NODE_ENV=development tsc --noEmit && yarn bun",
     "watch": [
         "src"
     ],

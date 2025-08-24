@@ -1,6 +1,6 @@
 import { FileHandle } from "fs/promises";
-import { Block, FileMeta } from "./head";
 import { _log } from "../log";
+import { Block, FileMeta } from "./head";
 
 export function roundUpCapacity(result: FileMeta, size: number) {
     return Math.ceil(size / result.blockSize) * result.blockSize;
@@ -74,7 +74,7 @@ function checkCollection(start1: number, end1: number, start2: number, end2: num
 export function detectCollisions(result: FileMeta, start: number, size: number, skip: string[] = []) {
     for (const { name, offset, capacity } of result.collections) {
         if (skip.includes(name)) continue;
-        if (checkCollection(offset, offset + capacity, start, start + size)) 
+        if (checkCollection(offset, offset + capacity, start, start + size))
             return true;
     }
 

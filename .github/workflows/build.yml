@@ -4,11 +4,13 @@ on:
   push:
     branches:
       - master
+    tags:
+      - "*"
 
   workflow_dispatch:
 
 concurrency:
-  group: build-master
+  group: build
   cancel-in-progress: true
 
 jobs:
@@ -16,3 +18,7 @@ jobs:
     uses: wxn0brP/workflow-dist/.github/workflows/build-ts.yml@main
     with:
       scriptsHandling: "remove-all"
+      publishToNpm: true
+
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

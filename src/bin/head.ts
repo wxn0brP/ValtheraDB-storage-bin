@@ -1,9 +1,9 @@
 import { BinManager, CollectionMeta } from ".";
+import { getFileCrc } from "../crc32";
+import { _log } from "../log";
 import { findFreeSlot } from "./data";
 import { HEADER_SIZE, VERSION } from "./static";
 import { detectCollisions, pushToFreeList, roundUpCapacity, writeData } from "./utils";
-import { getFileCrc } from "../crc32";
-import { _log } from "../log";
 
 export interface Block {
     offset: number;
@@ -74,7 +74,7 @@ export async function openFile(cmp: BinManager) {
         }
         if (!validCrc) {
             await _log(0, "err", "Invalid CRC");
-            if (options.crc === 2)  
+            if (options.crc === 2)
                 throw new Error("Invalid CRC");
         }
     }

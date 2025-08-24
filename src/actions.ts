@@ -4,8 +4,8 @@ import Data from "@wxn0brp/db-core/types/data";
 import FileCpu from "@wxn0brp/db-core/types/fileCpu";
 import { DbOpts } from "@wxn0brp/db-core/types/options";
 import { VQuery } from "@wxn0brp/db-core/types/query";
-import { BinManager } from "./bin";
 import { findUtil } from "@wxn0brp/db-core/utils/action";
+import { BinManager } from "./bin";
 
 export class BinFileAction extends dbActionBase {
     folder: string;
@@ -27,11 +27,6 @@ export class BinFileAction extends dbActionBase {
         await this.mgr.open();
     }
 
-    _getCollectionPath(collection: string) {
-        throw new Error("Method not implemented.");
-        return "";
-    }
-
     /**
      * Get a list of available databases in the specified folder.
      */
@@ -43,12 +38,12 @@ export class BinFileAction extends dbActionBase {
     /**
      * Check and create the specified collection if it doesn't exist.
      */
-    async checkCollection({ collection }: VQuery) {
+    async ensureCollection({ collection }: VQuery) {
         if (await this.issetCollection(arguments[0])) return;
         await this.mgr.write(collection, []);
         return true;
     }
-    
+
     /**
      * Check if a collection exists.
      */
@@ -61,7 +56,7 @@ export class BinFileAction extends dbActionBase {
      * Add a new entry to the specified database.
      */
     async add({ collection, data, id_gen = true }: VQuery) {
-        await this.checkCollection(arguments[0]);
+        await this.ensureCollection(arguments[0]);
 
         if (id_gen) data._id = data._id || genId();
         await this.fileCpu.add(collection, data);
@@ -72,7 +67,7 @@ export class BinFileAction extends dbActionBase {
      * Find entries in the specified database based on search criteria.
      */
     async find(query: VQuery) {
-        await this.checkCollection(query);
+        await this.ensureCollection(query);
         return await findUtil(query, this.fileCpu, [query.collection]);
     }
 
@@ -80,7 +75,7 @@ export class BinFileAction extends dbActionBase {
      * Find the first matching entry in the specified database based on search criteria.
      */
     async findOne({ collection, search, context = {}, findOpts = {} }: VQuery) {
-        await this.checkCollection(arguments[0]);
+        await this.ensureCollection(arguments[0]);
         let data = await this.fileCpu.findOne(collection, search, context, findOpts) as Data;
         return data || null;
     }
@@ -89,7 +84,7 @@ export class BinFileAction extends dbActionBase {
      * Update entries in the specified database based on search criteria and an updater function or object.
      */
     async update({ collection, search, updater, context = {} }: VQuery) {
-        await this.checkCollection(arguments[0]);
+        await this.ensureCollection(arguments[0]);
         return await this.fileCpu.update(collection, false, search, updater, context);
     }
 
@@ -97,7 +92,7 @@ export class BinFileAction extends dbActionBase {
      * Update the first matching entry in the specified database based on search criteria and an updater function or object.
      */
     async updateOne({ collection, search, updater, context = {} }: VQuery) {
-        await this.checkCollection(arguments[0]);
+        await this.ensureCollection(arguments[0]);
         return await this.fileCpu.update(collection, true, search, updater, context);
     }
 
@@ -105,7 +100,7 @@ export class BinFileAction extends dbActionBase {
      * Remove entries from the specified database based on search criteria.
      */
     async remove({ collection, search, context = {} }: VQuery) {
-        await this.checkCollection(arguments[0]);
+        await this.ensureCollection(arguments[0]);
         return await this.fileCpu.remove(collection, false, search, context);
     }
 
@@ -113,7 +108,7 @@ export class BinFileAction extends dbActionBase {
      * Remove the first matching entry from the specified database based on search criteria.
      */
     async removeOne({ collection, search, context = {} }: VQuery) {
-        await this.checkCollection(arguments[0]);
+        await this.ensureCollection(arguments[0]);
         return await this.fileCpu.remove(collection, true, search, context);
     }
 

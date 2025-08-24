@@ -2,8 +2,8 @@ import { ValtheraClass } from "@wxn0brp/db-core";
 import { BinFileAction } from "./actions";
 import { BinManager, Options } from "./bin";
 
-export * from "./bin";
 export * from "./actions";
+export * from "./bin";
 
 export async function createBinValthera(path: string, opts: Partial<Options> = {}, init = true) {
     const mgr = new BinManager(path, opts);

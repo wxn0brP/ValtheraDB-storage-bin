@@ -1,7 +1,7 @@
-import { FileMeta, saveHeaderAndPayload } from "./head";
 import { BinManager, CollectionMeta } from ".";
-import { detectCollisions, pushToFreeList, readData, roundUpCapacity, writeData } from "./utils";
 import { _log } from "../log";
+import { FileMeta, saveHeaderAndPayload } from "./head";
+import { detectCollisions, pushToFreeList, readData, roundUpCapacity, writeData } from "./utils";
 
 export function findCollection(cmp: BinManager, name: string): CollectionMeta | undefined {
     return cmp.meta.collections.find(c => c.name === name);
