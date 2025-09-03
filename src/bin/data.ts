@@ -32,7 +32,7 @@ export async function writeLogic(cmp: BinManager, collection: string, data: obje
     await _log(3, "Writing data to collection:", collection);
 
     const existingCollection = findCollection(cmp, collection);
-    const encoded = Buffer.from(await cmp.options.format.encode(data));
+    const encoded = Buffer.from(await cmp.options.format.encode(data, collection));
     const length = encoded.length;
     const capacity = roundUpCapacity(meta, length + 4);
 
@@ -95,5 +95,5 @@ export async function readLogic(cmp: BinManager, collection: string) {
 
     const len = await readData(cmp.fd, collectionMeta.offset, 4);
     const data = await readData(cmp.fd, collectionMeta.offset + 4, len.readUInt32LE(0));
-    return await cmp.options.format.decode(data);
+    return await cmp.options.format.decode(data, collection);
 }

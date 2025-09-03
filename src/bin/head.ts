@@ -106,7 +106,7 @@ export async function readHeaderPayload(cmp: BinManager) {
         throw new Error(`Incomplete payload header read: expected ${payloadLength} bytes, got ${bytesRead}`);
     }
 
-    const obj = await cmp.options.format.decode(payloadBuf) as {
+    const obj = await cmp.options.format.decode(payloadBuf, "") as {
         c: [string, number, number][];
         f: [number, number][];
     };
@@ -133,7 +133,7 @@ export async function saveHeaderAndPayload(cmp: BinManager, recursion = false) {
 
     const payloadObj = getHeaderPayload(meta);
 
-    const payloadBuf = Buffer.from(await cmp.options.format.encode(payloadObj));
+    const payloadBuf = Buffer.from(await cmp.options.format.encode(payloadObj, ""));
     if (payloadBuf.length > 64 * 1024) {
         console.error("Header payload too large");
         throw new Error("Header payload too large");
