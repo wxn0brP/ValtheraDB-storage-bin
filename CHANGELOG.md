@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.4](https://github.com/wxn0brp/ValtheraDB-storage-bin/compare/v0.0.3...v0.0.4) (2025-09-04)
+
+
+### Features
+
+* add generic, BinManager.write<T> ([a2bb851](https://github.com/wxn0brp/ValtheraDB-storage-bin/commit/a2bb851c2b3977d133b85bde917dd268b3256a41))
+* format.encode(data, collection) ([6a20cb5](https://github.com/wxn0brp/ValtheraDB-storage-bin/commit/6a20cb57444ac6e9e1d5a61a63316f6e3184118e))
+
 ### [0.0.3](https://github.com/wxn0brp/ValtheraDB-storage-bin/compare/v0.0.2...v0.0.3) (2025-08-24)
 
 
