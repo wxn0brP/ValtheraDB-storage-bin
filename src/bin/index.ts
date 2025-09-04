@@ -87,7 +87,7 @@ export class BinManager {
         }
     }
 
-    async write(collection: string, data: object[]) {
+    async write<T = object[]>(collection: string, data: T) {
         if (!this.fd) throw new Error("File not open");
         await writeLogic(this, collection, data);
     }

@@ -27,7 +27,7 @@ export async function findFreeSlot(cmp: BinManager, size: number): Promise<FileM
     return slot;
 }
 
-export async function writeLogic(cmp: BinManager, collection: string, data: object[]) {
+export async function writeLogic(cmp: BinManager, collection: string, data: any) {
     const { fd, meta } = cmp;
     await _log(3, "Writing data to collection:", collection);
 
