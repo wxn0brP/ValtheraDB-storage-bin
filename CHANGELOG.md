@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.5](https://github.com/wxn0brp/ValtheraDB-storage-bin/compare/v0.0.4...v0.0.5) (2025-09-04)
+
+
+### Bug Fixes
+
+* crc and new crc mode ([cc79715](https://github.com/wxn0brp/ValtheraDB-storage-bin/commit/cc7971591dbcd39fd5b9371644d2c3e9997f0dbc))
+
 ### [0.0.4](https://github.com/wxn0brp/ValtheraDB-storage-bin/compare/v0.0.3...v0.0.4) (2025-09-04)
 
 
