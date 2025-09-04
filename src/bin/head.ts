@@ -74,7 +74,7 @@ export async function openFile(cmp: BinManager) {
         }
         if (!validCrc) {
             await _log(0, "err", "Invalid CRC");
-            if (options.crc === 2)
+            if (options.crc === 2 || options.crc === 4)
                 throw new Error("Invalid CRC");
         }
     }

@@ -80,7 +80,8 @@ export async function writeLogic(cmp: BinManager, collection: string, data: any)
         await saveHeaderAndPayload(cmp);
         await _log(2, "Capacity exceeded");
     } else {
-        if (cmp.options.crc) {
+        const crc = cmp.options.crc;
+        if (crc === 3 || crc === 4) {
             const { computedCrc } = await getFileCrc(fd);
             const crcBuf = Buffer.alloc(16);
             crcBuf.writeUInt32LE(computedCrc);

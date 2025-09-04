@@ -29,6 +29,8 @@ export interface Options {
      * 0 - crc off
      * 1 - warn if error
      * 2 - throw if error
+     * 3 - 1 & save always on edit
+     * 4 - 2 & save always on edit
      */
     crc: number;
     overwriteRemovedCollection: boolean;
@@ -85,6 +87,10 @@ export class BinManager {
             await this.fd.close();
             this.fd = null;
         }
+    }
+
+    [Symbol.asyncDispose]() {
+        return this.close();
     }
 
     async write<T = object[]>(collection: string, data: T) {
