@@ -17,7 +17,7 @@
     },
     "devDependencies": {
         "@types/node": "^24.3.0",
-        "@wxn0brp/db-core": "^0.1.5",
+        "@wxn0brp/db-core": "^0.2.0",
         "tsc-alias": "^1.8.10",
         "typescript": "^5.9.2"
     },
@@ -25,7 +25,7 @@
         "@msgpack/msgpack": "^3.1.2"
     },
     "peerDependencies": {
-        "@wxn0brp/db-core": ">=0.1.5"
+        "@wxn0brp/db-core": ">=0.2.0"
     },
     "exports": {
         ".": {
