@@ -70,7 +70,7 @@ export async function writeLogic(cmp: BinManager, collection: string, data: any)
     const buf = Buffer.alloc(4);
     buf.writeUInt32LE(length, 0);
     await writeData(fd, offset, buf, 4);
-    await writeData(fd, offset + 4, encoded, capacity);
+    await writeData(fd, offset + 4, encoded, capacity - 4);
 
     if (existingCollection && length >= existingCollection.capacity) {
         meta.collections = meta.collections.map(c => {
