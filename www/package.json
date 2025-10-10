@@ -1,0 +1,21 @@
+{
+    "name": "www",
+    "version": "0.0.1",
+    "main": "dist/index.js",
+    "type": "module",
+    "scripts": {
+        "build": "tsc && tsc-alias",
+        "start": "node dist/server.js",
+        "bun": "bun run src/server.ts"
+    },
+    "devDependencies": {
+        "@types/bun": "*",
+        "tsc-alias": "*",
+        "typescript": "*"
+    },
+    "dependencies": {
+        "@wxn0brp/db-core": "^0.2.3",
+        "@wxn0brp/db-storage-bin": "^0.0.6",
+        "@wxn0brp/falcon-frame": "^0.4.0"
+    }
+}
