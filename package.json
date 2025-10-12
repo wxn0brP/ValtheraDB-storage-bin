@@ -17,16 +17,16 @@
         "bun": "bun run src/test.ts"
     },
     "devDependencies": {
-        "@types/node": "^24.3.0",
-        "@wxn0brp/db-core": "^0.2.0",
-        "tsc-alias": "^1.8.10",
-        "typescript": "^5.9.2"
+        "@types/node": "*",
+        "@wxn0brp/db-core": "^0.2.3",
+        "tsc-alias": "*",
+        "typescript": "*"
     },
     "dependencies": {
         "@msgpack/msgpack": "^3.1.2"
     },
     "peerDependencies": {
-        "@wxn0brp/db-core": ">=0.2.0"
+        "@wxn0brp/db-core": ">=0.2.3"
     },
     "exports": {
         ".": {
