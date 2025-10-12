@@ -1,6 +1,6 @@
-import FalconFrame, { Router } from "@wxn0brp/falcon-frame";
-import { createBinValthera, BinManager } from "@wxn0brp/db-storage-bin";
 import { ValtheraClass } from "@wxn0brp/db-core";
+import { BinManager, createBinValthera } from "@wxn0brp/db-storage-bin";
+import FalconFrame from "@wxn0brp/falcon-frame";
 import { existsSync } from "fs";
 import { open } from "fs/promises";
 
@@ -10,7 +10,7 @@ let db: ValtheraClass | null = null;
 let mgr: BinManager | null = null;
 let dbPath: string | null = null;
 
-const api = new Router();
+const api = app.router("/api");
 
 api.get("/load", async (req, res) => {
     dbPath = req.query.path as string;
@@ -80,7 +80,6 @@ api.post("/query", async (req, res) => {
     return data;
 });
 
-app.use("/api", api);
 app.static("public");
 app.static("dist");
 

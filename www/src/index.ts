@@ -26,7 +26,6 @@ async function loadFile() {
         alert(result.msg);
         return;
     }
-    alert(result.msg);
 
     loadHeader();
     loadHexView();
@@ -73,4 +72,7 @@ qs("#prev-chunk").addEventListener("click", () => {
 });
 qs("#next-chunk").addEventListener("click", () => {
     loadHexView(currentOffset + chunkSize);
+});
+dbPathInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") loadFile();
 });
