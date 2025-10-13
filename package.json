@@ -13,7 +13,6 @@
     "homepage": "https://github.com/wxn0brP/ValtheraDB-storage-bin",
     "scripts": {
         "build": "tsc && tsc-alias",
-        "build:front": "cd ./front && bun run build",
         "bun": "bun run src/test.ts"
     },
     "devDependencies": {
