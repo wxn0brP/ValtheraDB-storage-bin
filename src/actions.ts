@@ -1,5 +1,6 @@
-import { CustomFileCpu, genId } from "@wxn0brp/db-core";
+import { CustomFileCpu } from "@wxn0brp/db-core";
 import dbActionBase from "@wxn0brp/db-core/base/actions";
+import { addId } from "@wxn0brp/db-core/helpers/addId";
 import Data from "@wxn0brp/db-core/types/data";
 import FileCpu from "@wxn0brp/db-core/types/fileCpu";
 import { DbOpts } from "@wxn0brp/db-core/types/options";
@@ -55,10 +56,10 @@ export class BinFileAction extends dbActionBase {
     /**
      * Add a new entry to the specified database.
      */
-    async add({ collection, data, id_gen = true }: VQuery) {
+    async add(query: VQuery) {
         await this.ensureCollection(arguments[0]);
-
-        if (id_gen) data._id = data._id || genId();
+        await addId(query, this);
+        const { collection, data } = query;
         await this.fileCpu.add(collection, data);
         return data;
     }
