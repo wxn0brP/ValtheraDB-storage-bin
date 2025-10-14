@@ -5,21 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="dark light">
-    <title>Advanced File Analyzer</title>
+    <title>Valthera Binary File Analyzer</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <h1>Valthera Binary File Analyzer</h1>
-    <div class="card">
-        <h2>Load File</h2>
-        <div class="input-group">
-            <input type="text" id="db-path" placeholder="Enter database file path">
-            <button id="browse-files">Browse</button>
-            <button id="load-db">Load</button>
-        </div>
-    </div>
-
     <div id="file-selector-popup" class="popup-overlay">
         <div class="popup-content">
             <div class="popup-header">
@@ -44,14 +34,18 @@
             </div>
         </div>
     </div>
-    <div class="grid">
-        <div class="card">
-            <h2>File Header</h2>
-            <pre id="header-output"></pre>
+
+    <main>
+        <h2>Load File</h2>
+        <div class="input-group">
+            <input type="text" id="db-path" placeholder="Enter database file path">
+            <button id="browse-files">Browse</button>
+            <button id="load-db">Load</button>
         </div>
-        <div class="card">
-            <h2>Hex Viewer</h2>
-            <select id="chunk-size">
+
+        <h2>Hex View</h2>
+        <section style="display: flex; gap: 10px;">
+            <select id="chunk-size" style="width: 7rem; flex-grow: unset;">
                 <option value="256">256</option>
                 <option value="512">512</option>
                 <option value="1024">1024</option>
@@ -59,21 +53,23 @@
                 <option value="4096">4096</option>
                 <option value="custom">custom</option>
             </select>
-            <pre id="hex-output"></pre>
-            <div class="hex-view-controls">
-                <button id="prev-chunk">Previous</button>
-                <button id="next-chunk">Next</button>
-            </div>
+            <button id="prev-chunk">Previous</button>
+            <button id="next-chunk">Next</button>
+        </section>
+
+        <h2>File Header</h2>
+        <pre id="header-output"></pre>
+
+        <h2>Collection Data</h2>
+        <div class="input-group">
+            <select id="collections"></select>
+            <button id="view-collection">View</button>
         </div>
-        <div class="card" style="grid-column: span 2;">
-            <h2>Collection Data</h2>
-            <div class="input-group">
-                <select id="collections"></select>
-                <button id="view-collection">View</button>
-            </div>
-            <pre id="json-output"></pre>
-        </div>
-    </div>
+        <pre id="json-output"></pre>
+    </main>
+    <aside>
+        <pre id="hex-output"></pre>
+    </aside>
 
     <script src="index.js" type="module"></script>
 </body>
