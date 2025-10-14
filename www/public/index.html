@@ -51,6 +51,14 @@
         </div>
         <div class="card">
             <h2>Hex Viewer</h2>
+            <select id="chunk-size">
+                <option value="256">256</option>
+                <option value="512">512</option>
+                <option value="1024">1024</option>
+                <option value="2048">2048</option>
+                <option value="4096">4096</option>
+                <option value="custom">custom</option>
+            </select>
             <pre id="hex-output"></pre>
             <div class="hex-view-controls">
                 <button id="prev-chunk">Previous</button>

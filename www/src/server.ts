@@ -58,6 +58,21 @@ api.get("/header", async (req, res) => {
     return headerInfo;
 });
 
+function toHexDump(buffer: Buffer, offset: number): string {
+    const lines = [];
+    const blockSize = 16;
+    for (let i = 0; i < buffer.length; i += blockSize) {
+        const block = buffer.subarray(i, i + blockSize);
+        const hex = block.toString("hex").match(/.{1,2}/g)?.join(" ") || "";
+        const ascii = block.toString("ascii")
+            .replace(/[^\x20-\x7E]/g, ".");
+        const addr = (offset + i).toString(16).padStart(8, "0");
+        lines.push(`${addr}: ${hex.padEnd(3 * blockSize - 1)}  ${ascii}`);
+    }
+    return lines.join("\n");
+}
+
+
 api.get("/hex-view", async (req, res) => {
     if (!dbPath) {
         res.status(400);
@@ -71,11 +86,13 @@ api.get("/hex-view", async (req, res) => {
     await fd.read(buffer, 0, bytes, offset);
     await fd.close();
 
+    const hex = toHexDump(buffer, offset);
+
     return {
         offset,
         bytes,
-        hex: buffer.toString("hex"),
-    };
+        hex
+    }
 });
 
 api.get("/collections", async (req, res) => {

@@ -1,4 +1,4 @@
-import { fget, qs } from "./utils";
+import { fget, qi, qs } from "./utils";
 import {
     dbPathInput,
     headerOutput,
@@ -8,7 +8,7 @@ import {
 } from "./dom";
 
 let currentOffset = 0;
-const chunkSize = 256;
+let chunkSize = +qi("#chunk-size").value || 256;
 
 export async function loadFile() {
     const path = dbPathInput.value;
@@ -35,7 +35,7 @@ export async function loadHeader() {
 export async function loadHexView(offset = 0) {
     currentOffset = offset;
     const data = await fget(`hex-view?offset=${offset}&bytes=${chunkSize}`);
-    hexOutput.textContent = data.hex.replace(/(.{32})/g, "$1\n");
+    hexOutput.textContent = data.hex;
 }
 
 export async function loadCollections() {
@@ -69,6 +69,16 @@ qs("#prev-chunk").addEventListener("click", () => {
 
 qs("#next-chunk").addEventListener("click", () => {
     loadHexView(currentOffset + chunkSize);
+});
+
+qs("#chunk-size").addEventListener("change", (e: Event) => {
+    const val = (e.target as HTMLSelectElement).value;
+    if (val === "custom") {
+        chunkSize = +prompt("Enter chunk size:");
+    } else {
+        chunkSize = +val;
+    }
+    loadHexView(currentOffset);
 });
 
 dbPathInput.addEventListener("keydown", (e: KeyboardEvent) => {
