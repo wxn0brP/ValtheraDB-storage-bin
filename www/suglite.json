@@ -1,5 +1,5 @@
 {
-    "cmd": "tsc && bun run src/server.ts",
+    "cmd": "tsc && NODE_ENV=experimental bun run src/server.ts",
     "watch": [
         "src"
     ],

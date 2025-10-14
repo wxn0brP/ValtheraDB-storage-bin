@@ -4,41 +4,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
     <title>Advanced File Analyzer</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div class="container">
-        <h1>Valthera Binary File Analyzer</h1>
+    <h1>Valthera Binary File Analyzer</h1>
+    <div class="card">
+        <h2>Load File</h2>
+        <div class="input-group">
+            <input type="text" id="db-path" placeholder="Enter database file path">
+            <button id="load-db">Load</button>
+        </div>
+    </div>
+    <div class="grid">
         <div class="card">
-            <h2>Load File</h2>
-            <div class="input-group">
-                <input type="text" id="db-path" placeholder="Enter database file path">
-                <button id="load-db">Load</button>
+            <h2>File Header</h2>
+            <pre id="header-output"></pre>
+        </div>
+        <div class="card">
+            <h2>Hex Viewer</h2>
+            <pre id="hex-output"></pre>
+            <div class="hex-view-controls">
+                <button id="prev-chunk">Previous</button>
+                <button id="next-chunk">Next</button>
             </div>
         </div>
-        <div class="grid">
-            <div class="card">
-                <h2>File Header</h2>
-                <pre id="header-output"></pre>
+        <div class="card" style="grid-column: span 2;">
+            <h2>Collection Data</h2>
+            <div class="input-group">
+                <select id="collections"></select>
+                <button id="view-collection">View</button>
             </div>
-            <div class="card">
-                <h2>Hex Viewer</h2>
-                <pre id="hex-output"></pre>
-                <div class="hex-view-controls">
-                    <button id="prev-chunk">Previous</button>
-                    <button id="next-chunk">Next</button>
-                </div>
-            </div>
-            <div class="card" style="grid-column: span 2;">
-                <h2>Collection Data</h2>
-                <div class="input-group">
-                    <select id="collections"></select>
-                    <button id="view-collection">View</button>
-                </div>
-                <pre id="json-output"></pre>
-            </div>
+            <pre id="json-output"></pre>
         </div>
     </div>
 

@@ -1,6 +1,9 @@
 const qs = <T = HTMLDivElement>(selector: string) => document.querySelector(selector)! as T;
 const qi = (selector: string) => document.querySelector(selector)! as HTMLInputElement;
 
+const auth = (new URLSearchParams(window.location.search)).get("auth") || "";
+document.cookie = `auth=${auth}`;
+
 const dbPathInput = qi("#db-path");
 const headerOutput = qs("#header-output");
 const hexOutput = qs("#hex-output");

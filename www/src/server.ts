@@ -1,9 +1,13 @@
 import { ValtheraClass } from "@wxn0brp/db-core";
 import { BinManager, createBinValthera } from "@wxn0brp/db-storage-bin";
 import FalconFrame from "@wxn0brp/falcon-frame";
-import { existsSync } from "fs";
+import { randomUUID } from "crypto";
+import { existsSync, readdirSync } from "fs";
 import { open } from "fs/promises";
+import { createServer } from "http";
 
+const accessSecret = randomUUID();
+const secure = process.env.NODE_ENV !== "experimental";
 const app = new FalconFrame();
 
 let db: ValtheraClass | null = null;
@@ -11,6 +15,23 @@ let mgr: BinManager | null = null;
 let dbPath: string | null = null;
 
 const api = app.router("/api");
+
+api.use("/", (req, res, next) => {
+    if (!secure) return next();
+
+    if (req.socket.remoteAddress !== "127.0.0.1") {
+        res.status(403);
+        return { err: true, msg: "Forbidden" };
+    }
+
+    const auth = req.cookies.auth as string;
+    if (auth !== accessSecret) {
+        res.status(401);
+        return { err: true, msg: "Unauthorized" };
+    }
+
+    next();
+})
 
 api.get("/load", async (req, res) => {
     dbPath = req.query.path as string;
@@ -83,4 +104,8 @@ api.post("/query", async (req, res) => {
 app.static("public");
 app.static("dist");
 
-app.listen(+process.env.PORT || 30564, true);
+const port = +process.env.PORT || 30564;
+const server = createServer(app.getApp());
+server.listen(port, "127.0.0.1", () => {
+    console.log(`Server started http://localhost:${port}/?auth=` + accessSecret);
+});
