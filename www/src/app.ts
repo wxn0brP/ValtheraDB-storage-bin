@@ -35,6 +35,10 @@ export async function loadHeader() {
 export async function loadHexView(offset = 0) {
     currentOffset = offset;
     const data = await fget(`hex-view?offset=${offset}&bytes=${chunkSize}`);
+    if (data.err) {
+        alert(data.msg);
+        return;
+    }
     hexOutput.textContent = data.hex;
 }
 
@@ -69,6 +73,10 @@ qs("#prev-chunk").addEventListener("click", () => {
 
 qs("#next-chunk").addEventListener("click", () => {
     loadHexView(currentOffset + chunkSize);
+});
+
+qs("#reset-chunk").addEventListener("click", () => {
+    loadHexView(0);
 });
 
 qs("#chunk-size").addEventListener("change", (e: Event) => {

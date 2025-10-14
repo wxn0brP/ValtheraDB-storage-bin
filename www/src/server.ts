@@ -72,14 +72,22 @@ function toHexDump(buffer: Buffer, offset: number): string {
     return lines.join("\n");
 }
 
-
 api.get("/hex-view", async (req, res) => {
     if (!dbPath) {
         res.status(400);
         return { err: true, msg: "No database loaded" };
     }
     const offset = parseInt(req.query.offset as string) || 0;
-    const bytes = parseInt(req.query.bytes as string) || 256;
+    let bytes = parseInt(req.query.bytes as string) || 256;
+    const fileSize = mgr.meta.fileSize;
+
+    if (offset >= fileSize) {
+        res.status(400).json({ err: true, msg: "Offset exceeds file size" });
+        return;
+    }
+    if (offset + bytes > fileSize) {
+        bytes = fileSize - offset;
+    }
 
     const fd = await open(dbPath, "r");
     const buffer = Buffer.alloc(bytes);
