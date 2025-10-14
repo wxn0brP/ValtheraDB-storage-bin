@@ -61,7 +61,7 @@ api.get("/header", requireLoad, async (req, res) => {
     return headerInfo;
 });
 
-function toHexDump(buffer: Buffer, offset: number, mode: string): string {
+function toHexDump(buffer: Buffer, offset: number, mode: string): { addr: string, ascii: string, hex?: string }[] {
     const lines = [];
     const blockSize = mode === "wide-ascii" ? 64 : 16;
     for (let i = 0; i < buffer.length; i += blockSize) {
@@ -69,13 +69,13 @@ function toHexDump(buffer: Buffer, offset: number, mode: string): string {
         const hex = block.toString("hex").match(/.{1,2}/g)?.join(" ") || "";
         const ascii = block.toString("ascii")
             .replace(/[^\x20-\x7E]/g, ".");
+
         const addr = (offset + i).toString(16).padStart(8, "0");
-        let line = addr + ": ";
-        if (mode === "full") line += hex.padEnd(3 * blockSize - 1) + "  ";
-        line += ascii;
+        const line: any = { addr, ascii };
+        if (mode === "full") line.hex = hex.padEnd(3 * blockSize - 1);
         lines.push(line);
     }
-    return lines.join("\n");
+    return lines;
 }
 
 api.get("/hex-view", requireLoad, async (req, res) => {

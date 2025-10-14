@@ -40,7 +40,23 @@ export async function loadHexView(offset = 0) {
         alert(data.msg);
         return;
     }
-    hexOutput.textContent = data.hex;
+    hexOutput.innerHTML = "";
+    for (let i = 0; i < data.hex.length; i++) {
+        const lineData = data.hex[i] as { addr: string, ascii: string, hex?: string };
+        let line = "";
+
+        if (lineData.hex) {
+            line += lineData.hex.split(" ").map((hex, j) => `<span class="hex" data-id="${i}-${j}">${hex}</span>`).join(" ") + "&nbsp;".repeat(3);
+        }
+        line += lineData.ascii.split("").map((char, j) => `<span class="ascii" data-id="${i}-${j}">${char}</span>`).join("");
+
+        hexOutput.innerHTML += `
+            <div class="line">
+                ${lineData.addr}
+                ${line}
+            </div>
+        `;
+    }
 }
 
 export async function loadCollections() {

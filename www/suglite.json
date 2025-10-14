@@ -1,7 +1,8 @@
 {
     "cmd": "yarn build && NODE_ENV=experimental bun run src/server.ts",
     "watch": [
-        "src"
+        "src",
+        "public"
     ],
     "restart_cmd": "clear",
     "events": {

@@ -7,10 +7,12 @@
     <meta name="color-scheme" content="dark light">
     <title>Valthera Binary File Analyzer</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="file.css">
+    <link rel="stylesheet" href="details.css">
 </head>
 
 <body>
-    <div id="file-selector-popup" class="popup-overlay">
+    <div id="file-selector-popup">
         <div class="popup-content">
             <div class="popup-header">
                 <h2>Select Database File</h2>
@@ -77,9 +79,8 @@
         </div>
         <pre id="json-output"></pre>
     </main>
-    <aside>
-        <pre id="hex-output"></pre>
-    </aside>
+    <aside id="hex-output"></aside>
+    <div id="details-popup" style="display: none;"></div>
 
     <script src="index.js" type="module"></script>
 </body>
