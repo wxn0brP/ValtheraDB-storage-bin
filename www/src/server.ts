@@ -2,9 +2,10 @@ import { ValtheraClass } from "@wxn0brp/db-core";
 import { BinManager, createBinValthera } from "@wxn0brp/db-storage-bin";
 import FalconFrame from "@wxn0brp/falcon-frame";
 import { randomUUID } from "crypto";
-import { existsSync, readdirSync } from "fs";
+import { existsSync, readdirSync, statSync } from "fs";
 import { open } from "fs/promises";
 import { createServer } from "http";
+import { extname } from "path";
 
 const accessSecret = randomUUID();
 const secure = process.env.NODE_ENV !== "experimental";
@@ -99,6 +100,52 @@ api.post("/query", async (req, res) => {
 
     const data = await db.find(collection, query || {}, findOpts);
     return data;
+});
+
+api.get("/current-dir", () => ({ path: process.cwd() }));
+
+api.get("/list-dir", (req, res) => {
+    const dir = req.query.dir as string;
+    if (!dir) {
+        res.status(400);
+        return { err: true, msg: "No directory specified" };
+    }
+    try {
+        const files = readdirSync(dir);
+        const showAll = req.query.showAll === "true";
+
+        const fileObjects = files.map(file => {
+            const filePath = dir + (dir.endsWith("/") ? "" : "/") + file;
+            const fileStat = statSync(filePath);
+            const isDirectory = fileStat.isDirectory();
+            let fileType = "other";
+
+            if (isDirectory) {
+                fileType = "directory";
+            } else {
+                const ext = extname(file).slice(1);
+                fileType = ["vdb", "vfsp", "val"].includes(ext) ? "db" : "other";
+            }
+
+            return {
+                name: file,
+                type: fileType,
+                isDirectory: isDirectory
+            };
+        });
+
+        if (showAll) return fileObjects;
+
+        const filteredFileObjects = fileObjects.filter(fileObj =>
+            fileObj.isDirectory ||
+            fileObj.type === "db"
+        );
+        return filteredFileObjects;
+
+    } catch (error) {
+        res.status(500);
+        return { err: true, msg: `Error reading directory: ${(error as Error).message}` };
+    }
 });
 
 app.static("public");
