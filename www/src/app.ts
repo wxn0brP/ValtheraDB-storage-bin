@@ -5,6 +5,7 @@ import {
     hexOutput,
     collectionsSelect,
     jsonOutput,
+    hexModeSelect,
 } from "./dom";
 
 let currentOffset = 0;
@@ -34,7 +35,7 @@ export async function loadHeader() {
 
 export async function loadHexView(offset = 0) {
     currentOffset = offset;
-    const data = await fget(`hex-view?offset=${offset}&bytes=${chunkSize}`);
+    const data = await fget(`hex-view?offset=${offset}&bytes=${chunkSize}&mode=${hexModeSelect.value}`);
     if (data.err) {
         alert(data.msg);
         return;
@@ -77,6 +78,10 @@ qs("#next-chunk").addEventListener("click", () => {
 
 qs("#reset-chunk").addEventListener("click", () => {
     loadHexView(0);
+});
+
+hexModeSelect.addEventListener("change", () => {
+    loadHexView(currentOffset);
 });
 
 qs("#chunk-size").addEventListener("change", (e: Event) => {

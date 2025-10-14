@@ -11,3 +11,4 @@ export const fileList = qs("#file-list");
 export const currentPathElement = qs("#current-path");
 export const selectFileBtn = qs<HTMLButtonElement>("#select-file-btn");
 export const showAllFilesCheckbox = qi("#show-all-files");
+export const hexModeSelect = qs<HTMLSelectElement>("#hex-mode");

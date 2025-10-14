@@ -45,14 +45,23 @@
 
         <h2>Hex View</h2>
         <section style="display: flex; gap: 10px;">
-            <select id="chunk-size" style="width: 7rem; flex-grow: unset;">
-                <option value="256">256</option>
-                <option value="512">512</option>
-                <option value="1024">1024</option>
-                <option value="2048">2048</option>
-                <option value="4096">4096</option>
-                <option value="custom">custom</option>
-            </select>
+            <label>
+                Chunk size
+                <select id="chunk-size">
+                    <option value="2048">2048</option>
+                    <option value="4096">4096</option>
+                    <option value="8192">8192</option>
+                    <option value="custom">custom</option>
+                </select>
+            </label>
+            <label>
+                Hex mode
+                <select id="hex-mode">
+                    <option value="full">Full</option>
+                    <option value="ascii">Only ASCII</option>
+                    <option value="wide-ascii">Wide ASCII</option>
+                </select>
+            </label>
             <button id="prev-chunk">Previous</button>
             <button id="next-chunk">Next</button>
             <button id="reset-chunk">Go to start</button>

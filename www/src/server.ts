@@ -1,9 +1,8 @@
 import { ValtheraClass } from "@wxn0brp/db-core";
 import { BinManager, createBinValthera } from "@wxn0brp/db-storage-bin";
-import FalconFrame from "@wxn0brp/falcon-frame";
+import FalconFrame, { RouteHandler } from "@wxn0brp/falcon-frame";
 import { randomUUID } from "crypto";
 import { existsSync, readdirSync, statSync } from "fs";
-import { open } from "fs/promises";
 import { createServer } from "http";
 import { extname } from "path";
 
@@ -16,6 +15,14 @@ let mgr: BinManager | null = null;
 let dbPath: string | null = null;
 
 const api = app.router("/api");
+
+const requireLoad: RouteHandler = (_, res, next) => {
+    if (!db) {
+        res.status(400);
+        return { err: true, msg: "No database loaded" };
+    }
+    next();
+}
 
 api.use("/", (req, res, next) => {
     if (!secure) return next();
@@ -49,34 +56,29 @@ api.get("/load", async (req, res) => {
     }
 });
 
-api.get("/header", async (req, res) => {
-    if (!mgr) {
-        res.status(400);
-        return { err: true, msg: "No database loaded" };
-    }
+api.get("/header", requireLoad, async (req, res) => {
     const headerInfo = mgr.meta;
     return headerInfo;
 });
 
-function toHexDump(buffer: Buffer, offset: number): string {
+function toHexDump(buffer: Buffer, offset: number, mode: string): string {
     const lines = [];
-    const blockSize = 16;
+    const blockSize = mode === "wide-ascii" ? 64 : 16;
     for (let i = 0; i < buffer.length; i += blockSize) {
         const block = buffer.subarray(i, i + blockSize);
         const hex = block.toString("hex").match(/.{1,2}/g)?.join(" ") || "";
         const ascii = block.toString("ascii")
             .replace(/[^\x20-\x7E]/g, ".");
         const addr = (offset + i).toString(16).padStart(8, "0");
-        lines.push(`${addr}: ${hex.padEnd(3 * blockSize - 1)}  ${ascii}`);
+        let line = addr + ": ";
+        if (mode === "full") line += hex.padEnd(3 * blockSize - 1) + "  ";
+        line += ascii;
+        lines.push(line);
     }
     return lines.join("\n");
 }
 
-api.get("/hex-view", async (req, res) => {
-    if (!dbPath) {
-        res.status(400);
-        return { err: true, msg: "No database loaded" };
-    }
+api.get("/hex-view", requireLoad, async (req, res) => {
     const offset = parseInt(req.query.offset as string) || 0;
     let bytes = parseInt(req.query.bytes as string) || 256;
     const fileSize = mgr.meta.fileSize;
@@ -89,12 +91,10 @@ api.get("/hex-view", async (req, res) => {
         bytes = fileSize - offset;
     }
 
-    const fd = await open(dbPath, "r");
     const buffer = Buffer.alloc(bytes);
-    await fd.read(buffer, 0, bytes, offset);
-    await fd.close();
+    await mgr.fd.read(buffer, 0, bytes, offset);
 
-    const hex = toHexDump(buffer, offset);
+    const hex = toHexDump(buffer, offset, req.query.mode || "full");
 
     return {
         offset,
@@ -103,20 +103,12 @@ api.get("/hex-view", async (req, res) => {
     }
 });
 
-api.get("/collections", async (req, res) => {
-    if (!db) {
-        res.status(400);
-        return { err: true, msg: "No database loaded" };
-    }
+api.get("/collections", requireLoad, async (req, res) => {
     const collections = await db.getCollections();
     return collections;
 });
 
-api.post("/query", async (req, res) => {
-    if (!db) {
-        res.status(400);
-        return { err: true, msg: "No database loaded" };
-    }
+api.post("/query", requireLoad, async (req, res) => {
     const { collection, query, findOpts } = req.body;
     if (!collection) {
         res.status(400);
