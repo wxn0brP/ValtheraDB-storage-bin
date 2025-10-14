@@ -17,7 +17,7 @@
     },
     "dependencies": {
         "@wxn0brp/db-core": "^0.2.3",
-        "@wxn0brp/db-storage-bin": "^0.0.7",
+        "@wxn0brp/db-storage-bin": "^0.0.8",
         "@wxn0brp/falcon-frame": "^0.4.1"
     }
 }
