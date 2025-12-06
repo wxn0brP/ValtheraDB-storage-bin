@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.9](https://github.com/wxn0brP/ValtheraDB-storage-bin/compare/v0.0.8...v0.0.9) (2025-12-06)
+
+
+### Features
+
+* update www ([57d1245](https://github.com/wxn0brP/ValtheraDB-storage-bin/commit/57d1245444b2b518b88ab9f8997e0319d27f0247))
+* **www:** details popup ([159f69e](https://github.com/wxn0brP/ValtheraDB-storage-bin/commit/159f69ecd69996f744f742a226ff4f4a89f93c64))
+* **www:** improve css ([6e83017](https://github.com/wxn0brP/ValtheraDB-storage-bin/commit/6e830179313728bfa1f31ff9b9da4638c54942e5))
+* **www:** improve hex ([4238730](https://github.com/wxn0brP/ValtheraDB-storage-bin/commit/423873032088a1c3d6d871234b262ebb5f36bb92))
+* **www:** improve hex view ([73e5851](https://github.com/wxn0brP/ValtheraDB-storage-bin/commit/73e58513a99d4f469d3bd37944d492aed6a4d94a))
+* **www:** popup select file ([8b2500c](https://github.com/wxn0brP/ValtheraDB-storage-bin/commit/8b2500cadade24a9b5fdf7229a9afeddcd8899b2))
+* **www:** wide mode ([a455153](https://github.com/wxn0brP/ValtheraDB-storage-bin/commit/a45515325914d245d67969e2f4537e8608251995))
+
 ### [0.0.8](https://github.com/wxn0brP/ValtheraDB-storage-bin/compare/v0.0.7...v0.0.8) (2025-10-13)
 
 
