@@ -6,6 +6,7 @@
     "author": "wxn0brP",
     "license": "MIT",
     "type": "module",
+    "description": "ValtheraDB storage layer using a single binary file for data storage.",
     "repository": {
         "type": "git",
         "url": "https://github.com/wxn0brP/ValtheraDB-storage-bin.git"
@@ -17,7 +18,7 @@
     },
     "devDependencies": {
         "@types/node": "*",
-        "@wxn0brp/db-core": "^0.2.4",
+        "@wxn0brp/db-core": "^0.3.0",
         "tsc-alias": "*",
         "typescript": "*"
     },
@@ -25,8 +26,11 @@
         "@msgpack/msgpack": "^3.1.2"
     },
     "peerDependencies": {
-        "@wxn0brp/db-core": ">=0.2.4"
+        "@wxn0brp/db-core": ">=0.3.0"
     },
+    "files": [
+        "dist"
+    ],
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
@@ -38,8 +42,5 @@
             "default": "./dist/*.js",
             "import": "./dist/*.js"
         }
-    },
-    "files": [
-        "dist"
-    ]
+    }
 }
