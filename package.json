@@ -12,6 +12,11 @@
         "url": "https://github.com/wxn0brP/ValtheraDB-storage-bin.git"
     },
     "homepage": "https://github.com/wxn0brP/ValtheraDB-storage-bin",
+    "keywords": [
+        "valthera",
+        "valtheradb",
+        "vdb-adapter"
+    ],
     "scripts": {
         "build": "tsc && tsc-alias",
         "bun": "bun run src/test.ts"
