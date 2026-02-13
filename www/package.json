@@ -11,7 +11,7 @@
     },
     "devDependencies": {
         "@types/bun": "*",
-        "@wxn0brp/flanker-ui": "^0.4.3",
+        "@wxn0brp/flanker-ui": "^0.5.0",
         "tsc-alias": "*",
         "typescript": "*"
     },
