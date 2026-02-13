@@ -1,5 +1,5 @@
 import { ValtheraClass } from "@wxn0brp/db-core";
-import { BinManager, createBinValthera } from "@wxn0brp/db-storage-bin";
+import { BinManager, createBinValthera } from "../../src";
 import FalconFrame, { RouteHandler } from "@wxn0brp/falcon-frame";
 import { randomUUID } from "crypto";
 import { existsSync, readdirSync, statSync } from "fs";
@@ -109,13 +109,13 @@ api.get("/collections", requireLoad, async (req, res) => {
 });
 
 api.post("/query", requireLoad, async (req, res) => {
-    const { collection, query, findOpts } = req.body;
+    const { collection, query, dbFindOts, findOpts } = req.body;
     if (!collection) {
         res.status(400);
         return { err: true, msg: "No collection specified" };
     }
 
-    const data = await db.find(collection, query || {}, findOpts);
+    const data = await db.c(collection).find(query || {}, dbFindOts || {}, findOpts || {});
     return data;
 });
 
