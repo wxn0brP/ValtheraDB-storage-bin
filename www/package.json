@@ -16,7 +16,7 @@
         "typescript": "*"
     },
     "dependencies": {
-        "@wxn0brp/db-core": "^0.2.4",
+        "@wxn0brp/db-core": "^0.5.0",
         "@wxn0brp/db-storage-bin": "^0.0.8",
         "@wxn0brp/falcon-frame": "^0.5.0",
         "sass": "^1.93.2"
