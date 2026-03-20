@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.100.0](https://github.com/wxn0brP/ValtheraDB-storage-bin/compare/v0.90.0...v0.100.0) (2026-03-20)
+
+
+### Features
+
+* update ([927398d](https://github.com/wxn0brP/ValtheraDB-storage-bin/commit/927398d9203696fcc20e94089e8b599251dbc49a))
+
 ## [0.90.0](https://github.com/wxn0brP/ValtheraDB-storage-bin/compare/v0.0.14...v0.90.0) (2026-02-25)
 
 ### [0.0.14](https://github.com/wxn0brP/ValtheraDB-storage-bin/compare/v0.0.13...v0.0.14) (2026-02-17)
