@@ -1,7 +1,6 @@
 import { CustomFileCpu } from "@wxn0brp/db-core";
 import { CustomActionsBase } from "@wxn0brp/db-core/base/custom";
 import { DbOpts } from "@wxn0brp/db-core/types/options";
-import { VQuery } from "@wxn0brp/db-core/types/query";
 import { BinManager } from "./bin";
 
 export class BinFileAction extends CustomActionsBase {
@@ -34,7 +33,7 @@ export class BinFileAction extends CustomActionsBase {
     /**
      * Check and create the specified collection if it doesn't exist.
      */
-    async ensureCollection({ collection }: VQuery) {
+    async ensureCollection(collection: string) {
         if (await this.issetCollection(arguments[0])) return;
         await this.mgr.write(collection, []);
         return true;
@@ -43,7 +42,7 @@ export class BinFileAction extends CustomActionsBase {
     /**
      * Check if a collection exists.
      */
-    async issetCollection({ collection }: VQuery) {
+    async issetCollection(collection: string) {
         const collections = await this.getCollections();
         return collections.includes(collection);
     }
@@ -51,7 +50,7 @@ export class BinFileAction extends CustomActionsBase {
     /**
      * Removes a database collection from the file system.
      */
-    async removeCollection({ collection }: VQuery) {
+    async removeCollection(collection: string) {
         await this.mgr.removeCollection(collection);
         return true;
     }

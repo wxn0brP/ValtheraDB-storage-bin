@@ -16,7 +16,7 @@
         "typescript": "*"
     },
     "dependencies": {
-        "@wxn0brp/falcon-frame": "^0.7.0",
-        "sass": "^1.97.3"
+        "@wxn0brp/falcon-frame": "^0.7.1",
+        "sass": "^1.98.0"
     }
 }
