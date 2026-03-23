@@ -13,7 +13,7 @@
         "@types/bun": "*",
         "@wxn0brp/flanker-ui": "^0.5.1",
         "tsc-alias": "*",
-        "typescript": "^5"
+        "typescript": "^6.0.0"
     },
     "dependencies": {
         "@wxn0brp/falcon-frame": "^0.7.1",
