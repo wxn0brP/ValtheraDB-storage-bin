@@ -3,11 +3,19 @@
         "module": "es2022",
         "target": "es2024",
         "moduleResolution": "bundler",
-        "paths": {},
+        "paths": {
+            "#*": [
+                "../src/*"
+            ]
+        },
         "esModuleInterop": true,
         "skipLibCheck": true,
         "outDir": "./dist",
-        "declaration": true
+        "declaration": true,
+        "strict": false,
+        "types": [
+            "bun-types"
+        ]
     },
     "include": [
         "./src"

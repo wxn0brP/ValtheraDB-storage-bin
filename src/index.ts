@@ -18,3 +18,13 @@ export async function createBinValthera(path: string, opts: Partial<Options> = {
         mgr,
     }
 }
+
+export const DYNAMIC = {
+    async bin(path: string, opts: Partial<Options> = {}) {
+        const mgr = new BinManager(path, opts);
+        const actions = new BinFileAction(mgr);
+        await actions.init();
+        return actions;
+    }
+}
+

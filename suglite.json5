@@ -1,10 +1,6 @@
 {
-    cmd: "NODE_ENV=development tsc --noEmit && yarn bun",
+    cmd: "NODE_ENV=development tsc --noEmit && bun run src/test.ts",
     watch: [
         "src"
-    ],
-    restart_cmd: "clear",
-    events: {
-        rs: "clear"
-    }
+    ]
 }

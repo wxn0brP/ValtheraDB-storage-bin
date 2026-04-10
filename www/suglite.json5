@@ -1,0 +1,7 @@
+{
+    "cmd": "bun run build && NODE_ENV=experimental bun run src/server.ts",
+    "watch": [
+        "src",
+        "public"
+    ]
+}

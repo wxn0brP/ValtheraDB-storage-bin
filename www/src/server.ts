@@ -1,5 +1,5 @@
 import { ValtheraClass } from "@wxn0brp/db-core";
-import { BinManager, createBinValthera } from "../../src";
+import { BinManager, createBinValthera } from "#index";
 import FalconFrame, { RouteHandler } from "@wxn0brp/falcon-frame";
 import { randomUUID } from "crypto";
 import { existsSync, readdirSync, statSync } from "fs";

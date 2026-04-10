@@ -22,16 +22,16 @@
         "bun": "bun run src/test.ts"
     },
     "devDependencies": {
-        "@types/node": "*",
-        "@wxn0brp/db-core": "~0.10.0",
-        "tsc-alias": "*",
-        "typescript": "*"
+        "@types/bun": "*",
+        "@wxn0brp/db-core": "^0.10.3",
+        "tsc-alias": "^1",
+        "typescript": "^6"
     },
     "dependencies": {
         "@msgpack/msgpack": "^3.1.3"
     },
     "peerDependencies": {
-        "@wxn0brp/db-core": "~0.10.0"
+        "@wxn0brp/db-core": "^0.10.3"
     },
     "files": [
         "dist"
