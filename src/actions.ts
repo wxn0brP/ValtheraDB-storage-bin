@@ -34,7 +34,7 @@ export class BinFileAction extends CustomActionsBase {
      * Check and create the specified collection if it doesn't exist.
      */
     async ensureCollection(collection: string) {
-        if (await this.issetCollection(arguments[0])) return;
+        if (await this.issetCollection(collection)) return false;
         await this.mgr.write(collection, []);
         return true;
     }
