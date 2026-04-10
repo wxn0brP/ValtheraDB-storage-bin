@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.100.1](https://github.com/wxn0brP/ValtheraDB-storage-bin/compare/v0.100.0...v0.100.1) (2026-04-10)
+
+
+### Features
+
+* support DYNAMIC import via resolver, bump deps and update config ([129dd5a](https://github.com/wxn0brP/ValtheraDB-storage-bin/commit/129dd5a7df3084dc46cc3d0c3b819f5a00ab1514))
+
 ## [0.100.0](https://github.com/wxn0brP/ValtheraDB-storage-bin/compare/v0.90.0...v0.100.0) (2026-03-20)
 
 
