@@ -1,9 +1,39 @@
-.vscode
-dist
-node_modules
-.suglite_history
-*.val
-yarn.lock
-package-lock.json
-test.ts
-bun.lock
+```
+# Dependencies
+node_modules/
+
+# Build artifacts
+dist/
+build/
+target/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment files
+.env
+.env.local
+.env.*
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Temporary files
+*.tmp
+.DS_Store
+Thumbs.db
+```

@@ -1,4 +1,6 @@
+import { createReadStream, createWriteStream } from "fs";
 import { FileHandle } from "fs/promises";
+import { Readable } from "stream";
 import { _log } from "../log";
 import { Block, FileMeta } from "./head";
 
@@ -26,6 +28,33 @@ export async function writeData(fd: FileHandle, offset: number, data: Buffer, ca
     await _log(6, "Data written");
 }
 
+export async function writeDataStream(fd: FileHandle, offset: number, stream: Readable, capacity: number) {
+    if (!fd) throw new Error("File not open");
+
+    await _log(6, "Writing data stream at offset:", offset, "capacity:", capacity);
+
+    const chunks: Buffer[] = [];
+    for await (const chunk of stream) {
+        chunks.push(Buffer.from(chunk));
+    }
+    const data = Buffer.concat(chunks);
+
+    if (data.length > capacity) throw new Error("Data size exceeds capacity");
+
+    const { bytesWritten } = await fd.write(data, 0, data.length, offset);
+    await _log(5, "Bytes written:", bytesWritten);
+
+    if (data.length < capacity) {
+        const pad = Buffer.alloc(capacity - data.length, 0);
+        const padStart = offset + data.length;
+        await _log(6, "Padding with zeros:", pad.length, "at offset:", padStart);
+        const { bytesWritten: padBytesWritten } = await fd.write(pad, 0, pad.length, padStart);
+        await _log(6, "Bytes written:", padBytesWritten);
+    }
+
+    await _log(6, "Data stream written");
+}
+
 export async function readData(fd: FileHandle, offset: number, length: number): Promise<Buffer> {
     if (!fd) throw new Error("File not open");
 
@@ -37,6 +66,19 @@ export async function readData(fd: FileHandle, offset: number, length: number): 
     await _log(5, "Bytes read:", bytesRead);
 
     return buf;
+}
+
+export function readDataStream(fd: FileHandle, offset: number, length: number): Readable {
+    if (!fd) throw new Error("File not open");
+
+    _log(6, "Creating data stream from offset:", offset, "length:", length);
+
+    return createReadStream("", {
+        fd: fd.fd,
+        start: offset,
+        end: offset + length - 1,
+        autoClose: false
+    });
 }
 
 export function optimizeFreeList(blocks: Block[]): Block[] {

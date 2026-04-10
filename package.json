@@ -25,6 +25,7 @@
         "@types/bun": "*",
         "@wxn0brp/db-core": "^0.10.3",
         "tsc-alias": "^1",
+        "tsx": "^4.21.0",
         "typescript": "^6"
     },
     "dependencies": {

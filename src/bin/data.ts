@@ -2,7 +2,9 @@ import { BinManager, CollectionMeta } from ".";
 import { getFileCrc } from "../crc32";
 import { _log } from "../log";
 import { FileMeta, saveHeaderAndPayload } from "./head";
-import { detectCollisions, pushToFreeList, readData, roundUpCapacity, writeData } from "./utils";
+import { detectCollisions, pushToFreeList, readData, readDataStream, roundUpCapacity, writeData, writeDataStream } from "./utils";
+import { Readable } from "stream";
+import { finished } from "stream/promises";
 
 export function findCollection(cmp: BinManager, name: string): CollectionMeta | undefined {
     return cmp.meta.collections.find(c => c.name === name);
@@ -67,10 +69,29 @@ export async function writeLogic(cmp: BinManager, collection: string, data: any)
         await saveHeaderAndPayload(cmp);
     }
 
-    const buf = Buffer.alloc(4);
-    buf.writeUInt32LE(length, 0);
-    await writeData(fd, offset, buf, 4);
-    await writeData(fd, offset + 4, encoded, capacity - 4);
+    const lenBuf = Buffer.alloc(4);
+    lenBuf.writeUInt32LE(length, 0);
+    
+    const lenStream = Readable.from(lenBuf);
+    const dataStream = Readable.from(encoded);
+    
+    const combinedStream = new Readable({
+        read() {
+            const chunk = lenStream.read();
+            if (chunk !== null) {
+                this.push(chunk);
+            } else {
+                const dataChunk = dataStream.read();
+                if (dataChunk !== null) {
+                    this.push(dataChunk);
+                } else {
+                    this.push(null);
+                }
+            }
+        }
+    });
+    
+    await writeDataStream(fd, offset, combinedStream, capacity);
 
     if (existingCollection && length >= existingCollection.capacity) {
         meta.collections = meta.collections.map(c => {
@@ -85,7 +106,7 @@ export async function writeLogic(cmp: BinManager, collection: string, data: any)
             const { computedCrc } = await getFileCrc(fd);
             const crcBuf = Buffer.alloc(16);
             crcBuf.writeUInt32LE(computedCrc);
-            await writeData(fd, 16, crcBuf, 16);
+            await writeDataStream(fd, 16, Readable.from(crcBuf), 16);
         }
     }
 }
@@ -94,7 +115,9 @@ export async function readLogic(cmp: BinManager, collection: string) {
     const collectionMeta = findCollection(cmp, collection);
     if (!collectionMeta) throw new Error("Collection not found");
 
-    const len = await readData(cmp.fd, collectionMeta.offset, 4);
-    const data = await readData(cmp.fd, collectionMeta.offset + 4, len.readUInt32LE(0));
+    const lenBuf = await readData(cmp.fd, collectionMeta.offset, 4);
+    const length = lenBuf.readUInt32LE(0);
+    
+    const data = await readData(cmp.fd, collectionMeta.offset + 4, length);
     return await cmp.options.format.decode(data, collection);
 }
