@@ -3,7 +3,7 @@ export async function _log(level: number, ...data: any[]) {
     const logLevel = parseInt(process.env.VDB_BIN_LOG_LEVEL || '0', 10);
     if (logLevel < level) return;
 
-    let line = new Error().stack.split('\n')[3].trim();
+    let line = new Error().stack.split('\n')[2].trim();
     let path = line.slice(line.indexOf("(")).replace(dir, "").replace("(", "").replace(")", "");
     const at = line.slice(3, line.indexOf("(") - 1);
 

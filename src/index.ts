@@ -1,20 +1,16 @@
 import { ValtheraClass } from "@wxn0brp/db-core";
-import { BinFileAction } from "./actions";
 import { BinManager, Options } from "./bin";
 
-export * from "./actions";
 export * from "./bin";
 
 export async function createBinValthera(path: string, opts: Partial<Options> = {}, init = true) {
     const mgr = new BinManager(path, opts);
-    const actions = new BinFileAction(mgr);
-    const db = new ValtheraClass({ dbAction: actions });
+    const db = new ValtheraClass({ dbAction: mgr });
 
-    if (init) await actions.init();
+    if (init) await mgr.init();
 
     return {
         db,
-        actions,
         mgr,
     }
 }
@@ -22,9 +18,8 @@ export async function createBinValthera(path: string, opts: Partial<Options> = {
 export const DYNAMIC = {
     async bin(path: string, opts: Partial<Options> = {}) {
         const mgr = new BinManager(path, opts);
-        const actions = new BinFileAction(mgr);
-        await actions.init();
-        return actions;
+        await mgr.init();
+        return mgr;
     }
 }
 

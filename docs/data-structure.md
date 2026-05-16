@@ -20,25 +20,37 @@ The header is a fixed-size block of 64 bytes, structured as follows:
 | 4      | 4    | Payload Len  | Length of the payload data                            |
 | 8      | 4    | Payload Off  | Offset of the payload data from the header start      |
 | 12     | 4    | Block Size   | Preferred block size for allocations                  |
-| 16     | 4    | CRC32        | CRC32 checksum of the file (excluding this field)     |
-| 20     | 44   | Reserved     | Reserved for future use                               |
+| 16     | 48   | Reserved     | Reserved for future use                               |
 
 ### Payload
 
 The payload contains the serialized list of collections and free blocks. It is a msgpack-encoded object with the following structure:
 
 ```ts
-{
-  c: [string, number, number][]; // Collections: [name, offset, capacity]
-  f: [number, number][];         // Free blocks: [offset, capacity]
-}
+[
+  [string, number, number][], // Collections: [name, offset, capacity]
+  [number, number][]          // Free blocks: [offset, capacity]
+]
 ```
 
 ### Data Blocks
 
-Each collection's data is stored in a data block. A data block consists of:
+Each collection's data is stored in a data block. The block structure consists of:
 
-1. **Length (4 bytes)**: A 32-bit unsigned integer representing the length of the data (Uint32).
-2. **Data (variable)**: The actual data, padded to the nearest block size.
+1. **Total Length (4 bytes)**: A 32-bit unsigned integer (`Uint32`) representing the total size of the data section.
 
-The data is serialized using msgpack.
+2. **Records (variable length)**: A sequence of `N` records, where each record follows this format:
+  - **Record Length (4 bytes)**: A `Uint32` specifying the length of the data within this specific record.
+  - **Record Data (N bytes)**: The actual data, with the length defined by the preceding field.
+
+Logical structure:
+
+```text
+[ Total Length (Uint32) ]
+[ Record 1 Length (Uint32) | Record 1 Data ]
+[ Record 2 Length (Uint32) | Record 2 Data ]
+...
+[ Record N Length (Uint32) | Record N Data ]
+```
+
+The data within the records can be serialized using msgpack or another user-defined format.

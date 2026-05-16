@@ -1,6 +1,7 @@
 import { FileHandle } from "fs/promises";
 import { _log } from "../log";
 import { Block, FileMeta } from "./head";
+import { INT_SIZE } from "./static";
 
 export function roundUpCapacity(result: FileMeta, size: number) {
     return Math.ceil(size / result.blockSize) * result.blockSize;
@@ -87,4 +88,10 @@ export function pushToFreeList(result: FileMeta, offset: number, len: number) {
         capacity: roundUpCapacity(result, len),
     });
     result.freeList = optimizeFreeList(result.freeList);
+}
+
+export async function readCollectionEof(fd: FileHandle, offset: number) {
+    const buf = Buffer.alloc(INT_SIZE);
+    await fd.read(buf, 0, INT_SIZE, offset);
+    return buf.readUInt32LE(0);
 }

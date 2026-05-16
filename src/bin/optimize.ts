@@ -1,7 +1,7 @@
 import { unlink } from "fs/promises";
 import { BinManager } from ".";
 import { saveHeaderAndPayload } from "./head";
-import { HEADER_SIZE } from "./static";
+import { HEADER_SIZE, INT_SIZE } from "./static";
 import { readData, roundUpCapacity, writeData } from "./utils";
 import { _log } from "../log";
 
@@ -23,16 +23,16 @@ export async function optimize(cmp: BinManager) {
     await unlink(cmp.path);
     await new Promise(resolve => setTimeout(resolve, 100));
     await _log(5, "Re-opening database file for optimization");
-    await cmp.open();
+    await cmp.init();
 
     let offset = roundUpCapacity(cmp.meta, cmp.meta.payloadLength + HEADER_SIZE) + cmp.meta.blockSize;
+    const lengthBuffer = Buffer.alloc(INT_SIZE);
     for (const [collection, data] of allData) {
         await _log(6, "Writing optimized collection:", collection);
-        const len = roundUpCapacity(cmp.meta, data.length + 4);
-        const buf = Buffer.alloc(4);
-        buf.writeInt32LE(data.length, 0);
-        await writeData(cmp.fd, offset, buf, 4);
-        await writeData(cmp.fd, offset + 4, data, len);
+        const len = roundUpCapacity(cmp.meta, data.length + INT_SIZE);
+        lengthBuffer.writeInt32LE(data.length, 0);
+        await writeData(cmp.fd, offset, lengthBuffer, INT_SIZE);
+        await writeData(cmp.fd, offset + INT_SIZE, data, len);
         cmp.meta.collections.push({
             name: collection,
             offset,

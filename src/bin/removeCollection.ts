@@ -22,9 +22,8 @@ export async function removeCollection(cmp: BinManager, collection: string) {
         capacity: collectionMeta.capacity
     });
 
-    if (options.overwriteRemovedCollection) {
+    if (options.overwriteRemovedCollection)
         await writeData(fd, collectionMeta.offset, Buffer.alloc(collectionMeta.capacity), collectionMeta.capacity);
-    }
 
     await saveHeaderAndPayload(cmp);
 }

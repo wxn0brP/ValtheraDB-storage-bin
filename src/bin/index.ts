@@ -1,11 +1,19 @@
 import * as msgpack from "@msgpack/msgpack";
+import { ActionsBase } from "@wxn0brp/db-core/base/actions";
+import { addId } from "@wxn0brp/db-core/helpers/addId";
+import { DataInternal } from "@wxn0brp/db-core/types/data";
+import { VQueryT } from "@wxn0brp/db-core/types/query";
+import { findUtil } from "@wxn0brp/db-core/utils/action";
 import { access, constants, FileHandle, open } from "fs/promises";
-import { getFileCrc } from "../crc32";
 import { _log } from "../log";
-import { readLogic, writeLogic } from "./data";
+import { add } from "./add";
+import { ensureCollection } from "./collection";
+import { find, findOne } from "./find";
 import { FileMeta, openFile } from "./head";
 import { optimize } from "./optimize";
-import { removeCollection } from "./rm";
+import { removeCollection } from "./removeCollection";
+import { remove } from "./remove";
+import { update } from "./update";
 
 async function safeOpen(path: string) {
     try {
@@ -25,14 +33,6 @@ export interface CollectionMeta {
 
 export interface Options {
     preferredSize: number;
-    /**
-     * 0 - crc off
-     * 1 - warn if error
-     * 2 - throw if error
-     * 3 - 1 & save always on edit
-     * 4 - 2 & save always on edit
-     */
-    crc: number;
     overwriteRemovedCollection: boolean;
     format: {
         encode(data: any, collection: string): Promise<Parameters<typeof Buffer.from>[0]>;
@@ -40,10 +40,11 @@ export interface Options {
     }
 }
 
-export class BinManager {
+export class BinManager extends ActionsBase {
     public fd: null | FileHandle = null;
     public meta: FileMeta;
     public options: Options;
+    _inited = false;
 
     /**
      * Constructs a new BinManager instance.
@@ -53,11 +54,11 @@ export class BinManager {
      * not a positive number.
      */
     constructor(public path: string, options?: Partial<Options>) {
+        super();
         if (!path) throw new Error("Path not provided");
 
         this.options = {
             preferredSize: 512,
-            crc: 2,
             overwriteRemovedCollection: false,
             format: {
                 encode: async (data: any) => msgpack.encode(data),
@@ -66,24 +67,17 @@ export class BinManager {
             ...options
         }
 
-        if (!this.options.preferredSize || this.options.preferredSize <= 0) throw new Error("Preferred size not provided");
+        if (!this.options.preferredSize || this.options.preferredSize <= 0)
+            throw new Error("Preferred size not provided correctly");
     }
 
-    async open() {
+    async init() {
         this.fd = await safeOpen(this.path);
         await openFile(this);
     }
 
     async close() {
         if (this.fd) {
-            const buff = Buffer.alloc(8);
-            if (this.options.crc) {
-                const { computedCrc: crc } = await getFileCrc(this.fd);
-                buff.writeUInt32LE(crc, 0);
-            } else {
-                buff.fill(0, 0, 8);
-            }
-            await this.fd.write(buff, 0, 8, 16);
             await this.fd.close();
             this.fd = null;
         }
@@ -93,14 +87,21 @@ export class BinManager {
         return this.close();
     }
 
-    async write<T = object[]>(collection: string, data: T) {
-        if (!this.fd) throw new Error("File not open");
-        await writeLogic(this, collection, data);
+    async getCollections() {
+        return this.meta.collections.map(c => c.name);
     }
 
-    async read(collection: string) {
+    async issetCollection(collection: string) {
+        return this.meta.collections.map(c => c.name).includes(collection);
+    }
+
+    async ensureCollection(collection: string) {
         if (!this.fd) throw new Error("File not open");
-        return await readLogic(this, collection);
+        if (this.meta.collections.find(c => c.name === collection)) return false;
+
+        await ensureCollection(this, collection, 0, false);
+
+        return true;
     }
 
     async optimize() {
@@ -111,5 +112,46 @@ export class BinManager {
     async removeCollection(collection: string) {
         if (!this.fd) throw new Error("File not open");
         await removeCollection(this, collection);
+        return true;
+    }
+
+    async add(config: VQueryT.Add): Promise<DataInternal> {
+        await this.ensureCollection(config.collection);
+        await addId(config, this, false);
+        await add(this, config);
+        return config.data;
+    }
+
+    async find(config: VQueryT.Find): Promise<DataInternal[]> {
+        await this.ensureCollection(config.collection);
+        const data = await find(this, config);
+        return findUtil(config, data, [""]);
+    }
+
+    async findOne(config: VQueryT.FindOne): Promise<DataInternal | null> {
+        await this.ensureCollection(config.collection);
+        return await findOne(this, config);
+    }
+
+    async update(config: VQueryT.Update): Promise<DataInternal[]> {
+        await this.ensureCollection(config.collection);
+        return await update(this, config, false);
+    }
+
+    async updateOne(config: VQueryT.Update): Promise<DataInternal | null> {
+        await this.ensureCollection(config.collection);
+        const data = await update(this, config, true);
+        return data[0] ?? null;
+    }
+
+    async remove(config: VQueryT.Remove): Promise<DataInternal[]> {
+        await this.ensureCollection(config.collection);
+        return await remove(this, config, false);
+    }
+
+    async removeOne(config: VQueryT.Remove): Promise<DataInternal | null> {
+        await this.ensureCollection(config.collection);
+        const data = await remove(this, config, true);
+        return data[0] ?? null;
     }
 }

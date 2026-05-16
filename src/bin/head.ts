@@ -1,7 +1,6 @@
 import { BinManager, CollectionMeta } from ".";
-import { getFileCrc } from "../crc32";
 import { _log } from "../log";
-import { findFreeSlot } from "./data";
+import { getFreeSlot } from "./data";
 import { HEADER_SIZE, VERSION } from "./static";
 import { detectCollisions, pushToFreeList, roundUpCapacity, writeData } from "./utils";
 
@@ -65,20 +64,6 @@ export async function openFile(cmp: BinManager) {
     meta.blockSize = blockSize;
     await _log(2, "Block size:", blockSize);
 
-    if (options.crc) {
-        const { computedCrc, storedCrc } = await getFileCrc(fd);
-        const validCrc = computedCrc === storedCrc || storedCrc === 0;
-        await _log(2, "CRC:", computedCrc, "Needed CRC:", storedCrc, "Valid:", validCrc);
-        if (storedCrc === 0) {
-            await _log(1, "Warning: CRC is zero, CRC will not be checked");
-        }
-        if (!validCrc) {
-            await _log(0, "err", "Invalid CRC");
-            if (options.crc === 2 || options.crc === 4)
-                throw new Error("Invalid CRC");
-        }
-    }
-
     if (payloadOffset + payloadLength > fileSize - HEADER_SIZE) {
         await _log(6, "err", "Invalid payload length");
         throw new Error("Invalid payload length");
@@ -106,22 +91,22 @@ export async function readHeaderPayload(cmp: BinManager) {
         throw new Error(`Incomplete payload header read: expected ${payloadLength} bytes, got ${bytesRead}`);
     }
 
-    const obj = await cmp.options.format.decode(payloadBuf, "") as {
-        c: [string, number, number][];
-        f: [number, number][];
-    };
+    const obj = await cmp.options.format.decode(payloadBuf, "") as [
+        [string, number, number][], // collections
+        [number, number][], // freeList
+    ];
 
-    meta.collections = (obj.c || []).map(([name, offset, capacity]) => ({ name, offset, capacity }));
-    meta.freeList = (obj.f || []).map(([offset, capacity]) => ({ offset, capacity }));
+    meta.collections = obj[0].map(([name, offset, capacity]) => ({ name, offset, capacity }));
+    meta.freeList = obj[1].map(([offset, capacity]) => ({ offset, capacity }));
 
     await _log(6, "Collections and freeList loaded", meta);
 }
 
 export function getHeaderPayload(meta: FileMeta) {
-    return {
-        c: meta.collections.map(({ name, offset, capacity }) => ([name, offset, capacity])),
-        f: meta.freeList.map(({ offset, capacity }) => [offset, capacity]),
-    };
+    return [
+        meta.collections.map(({ name, offset, capacity }) => ([name, offset, capacity])),
+        meta.freeList.map(({ offset, capacity }) => [offset, capacity]),
+    ];
 }
 
 export async function saveHeaderAndPayload(cmp: BinManager, recursion = false) {
@@ -133,7 +118,7 @@ export async function saveHeaderAndPayload(cmp: BinManager, recursion = false) {
 
     const payloadObj = getHeaderPayload(meta);
 
-    const payloadBuf = Buffer.from(await cmp.options.format.encode(payloadObj, ""));
+    const payloadBuf = Buffer.from(await options.format.encode(payloadObj, ""));
     if (payloadBuf.length > 64 * 1024) {
         console.error("Header payload too large");
         throw new Error("Header payload too large");
@@ -148,11 +133,6 @@ export async function saveHeaderAndPayload(cmp: BinManager, recursion = false) {
     headerBuf.writeUInt32LE(meta.blockSize, 12);
     meta.payloadLength = payloadBuf.length;
 
-    if (options.crc) {
-        const { computedCrc: crc } = await getFileCrc(fd);
-        headerBuf.writeUInt32LE(crc, 16);
-    }
-
     await _log(6, "Writing header:", headerBuf.toString("hex"));
 
     // Write header
@@ -162,7 +142,7 @@ export async function saveHeaderAndPayload(cmp: BinManager, recursion = false) {
 
     if (detectCollisions(meta, HEADER_SIZE + meta.payloadOffset, roundPayload)) {
         await _log(2, "Collision detected");
-        const slot = !recursion && await findFreeSlot(cmp, roundPayload);
+        const slot = !recursion && await getFreeSlot(cmp, roundPayload);
         if (slot) {
             meta.payloadOffset = slot.offset - HEADER_SIZE;
         } else {
