@@ -34,6 +34,12 @@ This will reclaim unused space in the binary file.
 await mgr.optimize();
 ```
 
+### Closing
+
+```typescript
+await db.close();
+```
+
 ## API
 
 ### `createBinValthera(path, opts, init)`
