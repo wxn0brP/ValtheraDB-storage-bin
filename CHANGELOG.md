@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.110.0-alpha.1](https://github.com/wxn0brP/ValtheraDB-storage-bin/compare/v0.110.0-alpha.0...v0.110.0-alpha.1) (2026-06-05)
+
+
+### Features
+
+* bump db-core ([edf5d49](https://github.com/wxn0brP/ValtheraDB-storage-bin/commit/edf5d49a84d3f329b010cc36137e10c3a10e95f3))
+* improve optimize ([0269f2b](https://github.com/wxn0brP/ValtheraDB-storage-bin/commit/0269f2bec177d7473803c6aae14010c809031146))
+
 ## [0.110.0-alpha.0](https://github.com/wxn0brP/ValtheraDB-storage-bin/compare/v0.100.2...v0.110.0-alpha.0) (2026-05-17)
 
 
