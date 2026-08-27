@@ -1,5 +1,7 @@
 # ValtheraDB Bin Plugin
 
+> **Warning:** This adapter is experimental and NOT intended for production use. It may undergo frequent breaking changes.
+
 The purpose of this experiment is to create a storage layer that allows ValtheraDB, which normally operates on a directory/file structure, to instead use a single binary file for data storage.
 
 ## Installation
