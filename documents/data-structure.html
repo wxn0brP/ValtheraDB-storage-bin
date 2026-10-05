@@ -1,14 +1,82 @@
-<!DOCTYPE html><html class="default" lang="en" data-base="../"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>data-structure | @wxn0brp/db-storage-bin</title><meta name="description" content="Documentation for @wxn0brp/db-storage-bin"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/icons.js" id="tsd-icons-script"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><a href="../index.html" class="title">@wxn0brp/db-storage-bin</a><div id="tsd-toolbar-links"></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/><ul role="listbox" id="tsd-search-results"></ul><div id="tsd-search-status" aria-live="polite" aria-atomic="true"><div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-menu"></use></svg></a></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><ul class="tsd-breadcrumb" aria-label="Breadcrumb"><li><a href="" aria-current="page">data-structure</a></li></ul></div><div class="tsd-panel tsd-typography"><h1 id="data-structure" class="tsd-anchor-link">Data Structure<a href="#data-structure" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h1>
-<p>This document describes the data structure used by the binary database format.</p>
+<!DOCTYPE html><html class="default" lang="en" data-base="../"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>data-structure | @wxn0brp/db-storage-bin</title><meta name="description" content="Documentation for @wxn0brp/db-storage-bin"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/icons.js" id="tsd-icons-script"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar">
+<div class="tsd-toolbar-contents container"><a href="../index.html" class="title">@wxn0brp/db-storage-bin</a>
+<div id="tsd-toolbar-links"></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/>
+<ul role="listbox" id="tsd-search-results"></ul>
+<div id="tsd-search-status" aria-live="polite" aria-atomic="true">
+<div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-menu"></use></svg></a></div></header>
+<div class="container container-main">
+<div class="col-content">
+<div class="tsd-page-title">
+<ul class="tsd-breadcrumb" aria-label="Breadcrumb">
+<li><a href="" aria-current="page">data-structure</a></li></ul></div>
+<div class="tsd-panel tsd-typography"><h1 id="data-structure" class="tsd-anchor-link">Data Structure<a href="#data-structure" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h1>
+<p>This document describes the binary database format (version 4).</p>
+<h2 id="table-of-contents" class="tsd-anchor-link">Table of Contents<a href="#table-of-contents" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<ul>
+<li><a href="#file-layout">File Layout</a></li>
+<li><a href="#file-header-128-bytes">File Header</a></li>
+<li><a href="#superblock">Superblock</a></li>
+<li><a href="#free-lists">Free Lists</a></li>
+<li><a href="#collection-header-64-bytes">Collection Header</a></li>
+<li><a href="#records">Records</a></li>
+<li><a href="#_id-index"><code>_id</code> Index</a></li>
+<li><a href="#alignment-and-padding">Alignment and Padding</a></li>
+<li><a href="#crc32-coverage">Crc32 Coverage</a></li>
+<li><a href="#notes">Notes</a></li>
+</ul>
 <h2 id="file-layout" class="tsd-anchor-link">File Layout<a href="#file-layout" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2>
-<p>The file is structured as follows:</p>
-<ol>
-<li><strong>Header (64 bytes)</strong>: Contains metadata about the file.</li>
-<li><strong>Payload</strong>: Contains the serialized collections and free list data.</li>
-<li><strong>Data Blocks</strong>: Contains the actual data for each collection.</li>
-</ol>
-<h3 id="header" class="tsd-anchor-link">Header<a href="#header" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
-<p>The header is a fixed-size block of 64 bytes, structured as follows:</p>
+<pre><code><span class="hl-1">[</span><span class="hl-4">File</span><span class="hl-1"> </span><span class="hl-0">Header</span><span class="hl-1"> (128</span><span class="hl-6">B</span><span class="hl-1">)] [</span><span class="hl-0">Superblock</span><span class="hl-1"> (</span><span class="hl-4">var</span><span class="hl-1">)] [</span><span class="hl-4">Collections</span><span class="hl-1">...] [</span><span class="hl-4">Free</span><span class="hl-1"> </span><span class="hl-4">Lists</span><span class="hl-1">...] [</span><span class="hl-4">Record</span><span class="hl-1"> </span><span class="hl-4">regions</span><span class="hl-1">...]</span>
+</code><button>Copy</button></pre>
+
+<p>The file is a flat sequence of bytes. The header sits at offset 0. All other regions are referenced by offsets stored in the header.</p>
+<p>Logical regions:</p>
+<table>
+<thead>
+<tr>
+<th>Region</th>
+<th>Location</th>
+<th>Pinned</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>File header</td>
+<td>offset 0, length 128</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Collections superblock</td>
+<td><code>header.collectionsOffset</code></td>
+<td>No</td>
+</tr>
+<tr>
+<td>Free list - small</td>
+<td><code>header.freeSmallOffset</code></td>
+<td>No</td>
+</tr>
+<tr>
+<td>Free list - medium</td>
+<td><code>header.freeMediumOffset</code></td>
+<td>No</td>
+</tr>
+<tr>
+<td>Free list - large</td>
+<td><code>header.freeLargeOffset</code></td>
+<td>No</td>
+</tr>
+<tr>
+<td>Collection regions</td>
+<td>appended at tail of file</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Collection indexes</td>
+<td>inside their collection region</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="file-header-128-bytes" class="tsd-anchor-link">File Header (128 bytes)<a href="#file-header-128-bytes" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2>
 <table>
 <thead>
 <tr>
@@ -22,61 +90,485 @@
 <tr>
 <td>0</td>
 <td>4</td>
-<td>Version</td>
-<td>File format version (currently 1)</td>
+<td>Magic</td>
+<td><code>0x56444242</code> (&quot;VDBB&quot; in ASCII, little-endian)</td>
 </tr>
 <tr>
 <td>4</td>
 <td>4</td>
-<td>Payload Len</td>
-<td>Length of the payload data</td>
+<td>Version</td>
+<td>Format version, currently <code>4</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td>1</td>
+<td>Reserved</td>
+<td>Reserved for future use</td>
+</tr>
+<tr>
+<td>9</td>
+<td>1</td>
+<td>Flags</td>
+<td>File-level flags</td>
+</tr>
+<tr>
+<td>10</td>
+<td>4</td>
+<td>Collections Offset</td>
+<td>Offset of the msgpack collections array</td>
+</tr>
+<tr>
+<td>14</td>
+<td>4</td>
+<td>Collections Length</td>
+<td>Length of the msgpack payload</td>
+</tr>
+<tr>
+<td>18</td>
+<td>4</td>
+<td>Free Small Offset</td>
+<td>Offset of the small free-list region, <code>0</code> if absent</td>
+</tr>
+<tr>
+<td>22</td>
+<td>4</td>
+<td>Free Small Length</td>
+<td>Length of the small free-list region</td>
+</tr>
+<tr>
+<td>26</td>
+<td>4</td>
+<td>Free Medium Offset</td>
+<td>Offset of the medium free-list region, <code>0</code> if absent</td>
+</tr>
+<tr>
+<td>30</td>
+<td>4</td>
+<td>Free Medium Length</td>
+<td>Length of the medium free-list region</td>
+</tr>
+<tr>
+<td>34</td>
+<td>4</td>
+<td>Free Large Offset</td>
+<td>Offset of the large free-list region, <code>0</code> if absent</td>
+</tr>
+<tr>
+<td>38</td>
+<td>4</td>
+<td>Free Large Length</td>
+<td>Length of the large free-list region</td>
+</tr>
+<tr>
+<td>42</td>
+<td>4</td>
+<td>Block Size</td>
+<td>Preferred block alignment for allocations</td>
+</tr>
+<tr>
+<td>46</td>
+<td>4</td>
+<td>Growth Factor</td>
+<td><code>float32</code>, multiplier when a region needs to grow</td>
+</tr>
+<tr>
+<td>50</td>
+<td>8</td>
+<td>File Size</td>
+<td><code>uint64</code>, total size of the file in bytes</td>
+</tr>
+<tr>
+<td>58</td>
+<td>4</td>
+<td>CRC32</td>
+<td>CRC32 of bytes 0..57</td>
+</tr>
+<tr>
+<td>62</td>
+<td>66</td>
+<td>Reserved</td>
+<td>Reserved</td>
+</tr>
+</tbody>
+</table>
+<p>The header is little-endian everywhere. Bytes 62..127 are zero-initialized and reserved.</p>
+<h3 id="file-flags" class="tsd-anchor-link">File Flags<a href="#file-flags" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<table>
+<thead>
+<tr>
+<th>Bit</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td><code>CRC</code></td>
+<td>Reserved for future file-level CRC verification</td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>COMPRESSED</code></td>
+<td>Reserved; file may be codec-compressed</td>
+</tr>
+</tbody>
+</table>
+<h2 id="superblock" class="tsd-anchor-link">Superblock<a href="#superblock" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>The collections list is a msgpack-encoded array stored at <code>header.collectionsOffset</code>:</p>
+<pre><code class="ts"><span class="hl-1">[</span><br/><span class="hl-1">  { </span><span class="hl-4">name:</span><span class="hl-1"> </span><span class="hl-4">string</span><span class="hl-1">, </span><span class="hl-4">headerOffset:</span><span class="hl-1"> </span><span class="hl-4">number</span><span class="hl-1"> }, </span><span class="hl-8">// collection name + header location</span><br/><span class="hl-1">  ...</span><br/><span class="hl-1">]</span>
+</code><button type="button">Copy</button></pre>
+
+<p>Each entry references a collection header sitting at the absolute file offset <code>headerOffset</code> (length 64). The superblock itself is rewritten whenever collections are added, removed, or migrated.</p>
+<h2 id="free-lists" class="tsd-anchor-link">Free Lists<a href="#free-lists" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>Free regions are tracked in three segregated buckets. Each bucket contains slots within a specific size range:</p>
+<table>
+<thead>
+<tr>
+<th>Bucket</th>
+<th>Size range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Small</td>
+<td><code>&lt;= 256</code> bytes</td>
+</tr>
+<tr>
+<td>Medium</td>
+<td><code>&lt;= 4096</code> bytes</td>
+</tr>
+<tr>
+<td>Large</td>
+<td><code>&gt; 4096</code> bytes</td>
+</tr>
+</tbody>
+</table>
+<p>A slot below 8 bytes after a split is dropped (the remainder is too small to be useful).</p>
+<p>Each bucket region encodes a list of <code>(offset, size)</code> pairs:</p>
+<pre><code><span class="hl-1">[</span><span class="hl-4">count</span><span class="hl-1"> </span><span class="hl-4">uint32</span><span class="hl-1">][</span><span class="hl-4">offset</span><span class="hl-1"> </span><span class="hl-4">varint</span><span class="hl-1">][</span><span class="hl-4">size</span><span class="hl-1"> </span><span class="hl-4">varint</span><span class="hl-1">][</span><span class="hl-4">offset</span><span class="hl-1"> </span><span class="hl-4">varint</span><span class="hl-1">][</span><span class="hl-4">size</span><span class="hl-1"> </span><span class="hl-4">varint</span><span class="hl-1">]...</span>
+</code><button>Copy</button></pre>
+
+<p>where <code>count</code> is the number of slots in that bucket. The trailing varints are unsigned LEB128.</p>
+<p>When inserting a slot, <code>coalesce()</code> merges with adjacent neighbors in the same bucket and migrates the slot to the smallest bucket that fits.</p>
+<p>When allocating, the allocator looks for a free slot large enough; if no exact match, the slot is split (with the unused tail returned to the appropriate bucket). If no free slot exists, the allocator appends at the current <code>fileSize</code>.</p>
+<h2 id="collection-header-64-bytes" class="tsd-anchor-link">Collection Header (64 bytes)<a href="#collection-header-64-bytes" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<table>
+<thead>
+<tr>
+<th>Offset</th>
+<th>Size</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>4</td>
+<td>Record Count</td>
+<td>Total live + dead records in this collection</td>
+</tr>
+<tr>
+<td>4</td>
+<td>4</td>
+<td>Dead Count</td>
+<td>Records marked <code>DELETED</code></td>
 </tr>
 <tr>
 <td>8</td>
 <td>4</td>
-<td>Payload Off</td>
-<td>Offset of the payload data from the header start</td>
+<td>Capacity</td>
+<td>Total bytes reserved for this collection</td>
 </tr>
 <tr>
 <td>12</td>
 <td>4</td>
-<td>Block Size</td>
-<td>Preferred block size for allocations</td>
+<td>Used</td>
+<td>Bytes used by the header + records</td>
 </tr>
 <tr>
 <td>16</td>
-<td>48</td>
+<td>4</td>
+<td>Free Offset</td>
+<td>Byte offset (relative to collection start) for the next record</td>
+</tr>
+<tr>
+<td>20</td>
+<td>4</td>
+<td>Index Offset</td>
+<td>Relative offset of the <code>_id</code> index, <code>0</code> if absent</td>
+</tr>
+<tr>
+<td>24</td>
+<td>4</td>
+<td>Index Length</td>
+<td>Length of the index in bytes</td>
+</tr>
+<tr>
+<td>28</td>
+<td>1</td>
+<td>Flags</td>
+<td>Collection flags (<code>INDEXED</code>, <code>CRC</code>, <code>COMPRESSED</code>)</td>
+</tr>
+<tr>
+<td>29</td>
+<td>8</td>
+<td>Last Compaction Ts</td>
+<td><code>uint64</code>, milliseconds since the epoch of the last compaction</td>
+</tr>
+<tr>
+<td>37</td>
+<td>4</td>
+<td>CRC32</td>
+<td>CRC32 of bytes 0..36</td>
+</tr>
+<tr>
+<td>41</td>
+<td>23</td>
 <td>Reserved</td>
-<td>Reserved for future use</td>
+<td>Reserved</td>
 </tr>
 </tbody>
 </table>
-<h3 id="payload" class="tsd-anchor-link">Payload<a href="#payload" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
-<p>The payload contains the serialized list of collections and free blocks. It is a msgpack-encoded object with the following structure:</p>
-<pre><code class="ts"><span class="hl-1">[</span><br/><span class="hl-1">  [</span><span class="hl-4">string</span><span class="hl-1">, </span><span class="hl-4">number</span><span class="hl-1">, </span><span class="hl-4">number</span><span class="hl-1">][], </span><span class="hl-8">// Collections: [name, offset, capacity]</span><br/><span class="hl-1">  [</span><span class="hl-4">number</span><span class="hl-1">, </span><span class="hl-4">number</span><span class="hl-1">][]          </span><span class="hl-8">// Free blocks: [offset, capacity]</span><br/><span class="hl-1">]</span>
-</code><button type="button">Copy</button></pre>
+<p>After the collection header, records follow back-to-back starting at relative offset <code>COLLECTION_HEADER_SIZE = 64</code>.</p>
+<h3 id="collection-flags" class="tsd-anchor-link">Collection Flags<a href="#collection-flags" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<table>
+<thead>
+<tr>
+<th>Bit</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td><code>INDEXED</code></td>
+<td>The collection maintains a sorted <code>_id</code> index</td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>CRC</code></td>
+<td>Records carry a trailing CRC32 checksum</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>COMPRESSED</code></td>
+<td>Reserved; records may be codec-compressed</td>
+</tr>
+</tbody>
+</table>
+<h3 id="reserved-fields" class="tsd-anchor-link">Reserved fields<a href="#reserved-fields" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p>Bytes 41..63 are zero-initialized and reserved for future expansion (per-collection schema, encryption metadata, etc.).</p>
+<h2 id="records" class="tsd-anchor-link">Records<a href="#records" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>Each record is encoded as:</p>
+<pre><code><span class="hl-1">[</span><span class="hl-4">flags</span><span class="hl-1"> </span><span class="hl-4">u8</span><span class="hl-1">][</span><span class="hl-4">len</span><span class="hl-1"> </span><span class="hl-4">varint</span><span class="hl-1">][</span><span class="hl-4">data</span><span class="hl-1"> ...][?</span><span class="hl-4">crc</span><span class="hl-1"> </span><span class="hl-4">u32</span><span class="hl-1">]</span>
+</code><button>Copy</button></pre>
 
-<h3 id="data-blocks" class="tsd-anchor-link">Data Blocks<a href="#data-blocks" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
-<p>Each collection's data is stored in a data block. The block structure consists of:</p>
-<ol>
-<li>
-<p><strong>Total Length (4 bytes)</strong>: A 32-bit unsigned integer (<code>Uint32</code>) representing the total size of the data section.</p>
-</li>
-<li>
-<p><strong>Records (variable length)</strong>: A sequence of <code>N</code> records, where each record follows this format:</p>
-</li>
-</ol>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Size</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>flags</code></td>
+<td>1 byte</td>
+<td>Bitmask of record flags</td>
+</tr>
+<tr>
+<td><code>len</code></td>
+<td>1-5 bytes (varint)</td>
+<td>Unsigned LEB128 length of the encoded <code>data</code></td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td><code>len</code> bytes</td>
+<td>Codec-specific payload (msgpack by default)</td>
+</tr>
+<tr>
+<td><code>crc</code></td>
+<td>4 bytes (optional)</td>
+<td>Present only when the <code>CRC</code> flag is set</td>
+</tr>
+</tbody>
+</table>
+<h3 id="record-flags" class="tsd-anchor-link">Record Flags<a href="#record-flags" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<table>
+<thead>
+<tr>
+<th>Bit</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td><code>DELETED</code></td>
+<td>Record is tombstoned; reused on compaction</td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>CRC</code></td>
+<td>Trailing 4-byte CRC32 covers <code>flags + len + data</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>COMPRESSED</code></td>
+<td>Reserved; <code>data</code> is codec-compressed</td>
+</tr>
+</tbody>
+</table>
+<p>When reading a deleted record the decoder skips past <code>len + crc</code> bytes without deserializing the payload, so deletes are cheap.</p>
+<h3 id="varint-encoding" class="tsd-anchor-link">Varint encoding<a href="#varint-encoding" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p>Lengths use unsigned LEB128 (the standard encoding used in Protocol Buffers, FlatBuffers, etc.):</p>
+<pre><code><span class="hl-4">value</span><span class="hl-1"> &lt; </span><span class="hl-7">0x80</span><span class="hl-1">          -&gt; </span><span class="hl-7">1</span><span class="hl-1"> </span><span class="hl-4">byte</span><br/><span class="hl-4">value</span><span class="hl-1"> &lt; </span><span class="hl-7">0x4000</span><span class="hl-1">        -&gt; </span><span class="hl-7">2</span><span class="hl-1"> </span><span class="hl-4">bytes</span><br/><span class="hl-4">value</span><span class="hl-1"> &lt; </span><span class="hl-7">0x200000</span><span class="hl-1">      -&gt; </span><span class="hl-7">3</span><span class="hl-1"> </span><span class="hl-4">bytes</span><br/><span class="hl-4">value</span><span class="hl-1"> &lt; </span><span class="hl-7">0x10000000</span><span class="hl-1">    -&gt; </span><span class="hl-7">4</span><span class="hl-1"> </span><span class="hl-4">bytes</span><br/><span class="hl-4">otherwise</span><span class="hl-1">             -&gt; </span><span class="hl-7">5</span><span class="hl-1"> </span><span class="hl-0">bytes</span><span class="hl-1"> (</span><span class="hl-4">max</span><span class="hl-1"> </span><span class="hl-4">value</span><span class="hl-1"> </span><span class="hl-7">2</span><span class="hl-1">^</span><span class="hl-7">35</span><span class="hl-1"> - </span><span class="hl-7">1</span><span class="hl-1">)</span>
+</code><button>Copy</button></pre>
+
+<p>This is a major space win for small records: a typical 50-byte msgpack record uses 1 byte for length instead of 4 in the v3 format (which used a fixed <code>uint32</code>).</p>
+<h3 id="crc-coverage" class="tsd-anchor-link">CRC coverage<a href="#crc-coverage" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p>When the record <code>CRC</code> flag is set, a CRC32 covers <code>flags + varint length + data</code>. CRC mismatches raise an error during decode (and silently skip the record when the adapter encounters corruption during a scan).</p>
+<h2 id="index" class="tsd-anchor-link"><code>_id</code> Index<a href="#index" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>When a collection has the <code>INDEXED</code> flag set, an <code>_id</code> index is maintained alongside the records.</p>
+<p>Each entry is exactly <code>INDEX_ENTRY_SIZE = 64</code> bytes:</p>
+<table>
+<thead>
+<tr>
+<th>Offset</th>
+<th>Size</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>56</td>
+<td>ID</td>
+<td>UTF-8 string, padded with zeros</td>
+</tr>
+<tr>
+<td>56</td>
+<td>1</td>
+<td>ID Length</td>
+<td>Byte length of the ID (max 56)</td>
+</tr>
+<tr>
+<td>57</td>
+<td>3</td>
+<td>Reserved</td>
+<td>Reserved</td>
+</tr>
+<tr>
+<td>60</td>
+<td>4</td>
+<td>Record Offset</td>
+<td>Absolute file offset of the record</td>
+</tr>
+</tbody>
+</table>
+<p>The entries are sorted using ValtheraDB's native ID comparison (<code>compareIds</code>): first by the timestamp part of the ID (the base-36 prefix before <code>-</code>), then lexicographically as a tiebreaker. Binary search is used for <code>findOne({ _id: ... })</code> queries. The offset is absolute (file-wide) so reads can jump straight to the record.</p>
+<h3 id="id-length-limit" class="tsd-anchor-link">ID length limit<a href="#id-length-limit" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p>IDs longer than 56 bytes are truncated. For ValtheraDB's default generated IDs this is more than enough; if you use longer keys, hash them (e.g. SHA-256 truncated to 32 hex chars) before storing.</p>
+<h3 id="maintenance-cost" class="tsd-anchor-link">Maintenance cost<a href="#maintenance-cost" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p>The index uses a two-tier structure: a <code>base</code> array and a <code>delta</code> array. Inserts go into <code>delta</code> (O(log n) search + O(n) splice). When <code>delta</code> reaches 64 entries, it is merged into <code>base</code> (O(n) merge sort). This amortizes the cost: most inserts are fast, and the full rewrite happens only periodically.</p>
+<p>For workloads with millions of indexed records, batch imports should disable indexing temporarily (<code>mgr.setCollectionIndexed('c', false)</code>), import, then re-enable and rebuild via <code>mgr.optimize()</code>.</p>
+<h2 id="alignment-and-padding" class="tsd-anchor-link">Alignment and Padding<a href="#alignment-and-padding" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>All regions are aligned to <code>blockSize</code> (default 512 bytes, configurable via <code>preferredSize</code>). This minimizes wasted space on fragmented allocations.</p>
+<p>After an allocation, if the requested size does not exactly fit, the allocator pads the request to a block boundary and returns the remainder to the appropriate free-list bucket.</p>
+<p>When a collection grows past its current capacity, it is moved to a new region and the old region is returned to the free list.</p>
+<h2 id="crc32-coverage" class="tsd-anchor-link">CRC32 Coverage<a href="#crc32-coverage" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<table>
+<thead>
+<tr>
+<th>Region</th>
+<th>CRC present</th>
+<th>CRC scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>File header</td>
+<td>Yes</td>
+<td>bytes 0..57</td>
+</tr>
+<tr>
+<td>Collection header</td>
+<td>Yes</td>
+<td>bytes 0..36</td>
+</tr>
+<tr>
+<td>Index entries</td>
+<td>No</td>
+<td>(offset is independently verifiable)</td>
+</tr>
+<tr>
+<td>Records</td>
+<td>Optional</td>
+<td><code>flags + len + data</code></td>
+</tr>
+</tbody>
+</table>
+<p>A <code>0</code> CRC value in the file header or collection header is treated as &quot;no CRC computed&quot; (legacy v4 files written before this version). On read, the CRC is verified only when it is non-zero.</p>
+<h2 id="notes" class="tsd-anchor-link">Notes<a href="#notes" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2>
 <ul>
-<li><strong>Record Length (4 bytes)</strong>: A <code>Uint32</code> specifying the length of the data within this specific record.</li>
-<li><strong>Record Data (N bytes)</strong>: The actual data, with the length defined by the preceding field.</li>
+<li>The file is <strong>append-mostly</strong>: new records go to the end of their collection. Deleted records are flagged.</li>
+<li>Free regions are coalesced on insert and migrated between buckets when they grow or shrink.</li>
+<li>Auto-compaction triggers when <code>deadCount / recordCount &gt; 0.25</code> after a <code>remove</code> or <code>update</code> operation. Manual compaction is available via <code>mgr.optimize()</code>.</li>
+<li>Manual file truncation is unsupported; the file is truncated automatically to <code>header.fileSize</code> by <code>optimize()</code>.</li>
 </ul>
-<p>Logical structure:</p>
-<pre><code class="text">[ Total Length (Uint32) ]
-[ Record 1 Length (Uint32) | Record 1 Data ]
-[ Record 2 Length (Uint32) | Record 2 Data ]
-...
-[ Record N Length (Uint32) | Record N Data ]
-</code><button type="button">Copy</button></pre>
-
-<p>The data within the records can be serialized using msgpack or another user-defined format.</p>
-</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg><h3>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg><h3>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#data-structure"><span>Data <wbr/>Structure</span></a><ul><li><a href="#file-layout"><span>File <wbr/>Layout</span></a></li><li><ul><li><a href="#header"><span>Header</span></a></li><li><a href="#payload"><span>Payload</span></a></li><li><a href="#data-blocks"><span>Data <wbr/>Blocks</span></a></li></ul></li></ul></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="../modules.html">@wxn0brp/db-storage-bin</a><ul class="tsd-small-nested-navigation" id="tsd-nav-container"><li>Loading...</li></ul></nav></div></div></div><footer><p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer><div class="overlay"></div></body></html>
+</div></div>
+<div class="col-sidebar">
+<div class="page-menu">
+<div class="tsd-navigation settings">
+<details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>Settings</h3></summary>
+<div class="tsd-accordion-details">
+<div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span>
+<ul id="tsd-filter-options">
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div>
+<div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
+<details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>On This Page</h3></summary>
+<div class="tsd-accordion-details"><a href="#data-structure"><span>Data <wbr/>Structure</span></a>
+<ul>
+<li><a href="#table-of-contents"><span>Table of <wbr/>Contents</span></a></li>
+<li><a href="#file-layout"><span>File <wbr/>Layout</span></a></li>
+<li><a href="#file-header-128-bytes"><span>File <wbr/>Header (128 bytes)</span></a></li>
+<li>
+<ul>
+<li><a href="#file-flags"><span>File <wbr/>Flags</span></a></li></ul></li>
+<li><a href="#superblock"><span>Superblock</span></a></li>
+<li><a href="#free-lists"><span>Free <wbr/>Lists</span></a></li>
+<li><a href="#collection-header-64-bytes"><span>Collection <wbr/>Header (64 bytes)</span></a></li>
+<li>
+<ul>
+<li><a href="#collection-flags"><span>Collection <wbr/>Flags</span></a></li>
+<li><a href="#reserved-fields"><span>Reserved fields</span></a></li></ul></li>
+<li><a href="#records"><span>Records</span></a></li>
+<li>
+<ul>
+<li><a href="#record-flags"><span>Record <wbr/>Flags</span></a></li>
+<li><a href="#varint-encoding"><span>Varint encoding</span></a></li>
+<li><a href="#crc-coverage"><span>CRC coverage</span></a></li></ul></li>
+<li><a href="#index"><span> <wbr/>Index</span></a></li>
+<li>
+<ul>
+<li><a href="#id-length-limit"><span>ID length limit</span></a></li>
+<li><a href="#maintenance-cost"><span>Maintenance cost</span></a></li></ul></li>
+<li><a href="#alignment-and-padding"><span>Alignment and <wbr/>Padding</span></a></li>
+<li><a href="#crc32-coverage"><span>CRC32 <wbr/>Coverage</span></a></li>
+<li><a href="#notes"><span>Notes</span></a></li></ul></div></details></div>
+<div class="site-menu">
+<nav class="tsd-navigation"><a href="../modules.html">@wxn0brp/db-storage-bin</a>
+<ul class="tsd-small-nested-navigation" id="tsd-nav-container">
+<li>Loading...</li></ul></nav></div></div></div><footer>
+<p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer>
+<div class="overlay"></div></body></html>
