@@ -14,6 +14,6 @@
         "sass": "^1.99.0"
     },
     "dependencies": {
-        "@wxn0brp/falcon-frame": "^0.8.1"
+        "@wxn0brp/falcon-frame": "^0.9.0"
     }
 }
